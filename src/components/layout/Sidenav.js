@@ -119,7 +119,7 @@ Wekil Zewari
         </Menu.Item>
 
         <Menu.Item key="5123">
-          <NavLink to="/fr">
+          <NavLink to="/drivers">
             <span
               className="icon"
               style={{
@@ -127,7 +127,7 @@ Wekil Zewari
               }}
             >
 <CheckCircleFilled color="blue" />              </span>
-            <span className="label">Final Report</span>
+            <span className="label">Drivers</span>
           </NavLink>
         </Menu.Item>
 

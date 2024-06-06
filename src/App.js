@@ -14,11 +14,10 @@ import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 
 import Main from "./components/layout/Main";
-import FR from "./components/fr/FR";
+import Drivers from "./components/drivers/drivers";
 
-import IRDetail from "./components/ir/detail";
 
-import FRDetail from "./components/fr/detail";
+import DriversDetail from "./components/drivers/detail";
 
 
 import User from "./components/userManagement/user";
@@ -45,9 +44,8 @@ function App() {
         <Main>
           <Route exact path="/dashboard" component={Home} />
           <Route exact path="/profile" component={Profile} />
-          <Route exact path="/fr" component={FR} />
-          <Route exact path="/irDetails/:id" component={IRDetail} />
-          <Route exact path="/frDetails/:id" component={FRDetail} />
+          <Route exact path="/drivers" component={Drivers} />
+          <Route exact path="/driverDetails/:id" component={DriversDetail} />
 
 
 

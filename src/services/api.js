@@ -13,7 +13,7 @@ const useFetchWithToken = (endpoint) => {
   if (!token) {
     // Redirect to login page if token is not found
     history.push('/login');
-  }  const apiUrl = process.env.API_URL || 'https://kmsbe.frontieri.com/kmsApi'; 
+  }  const apiUrl = process.env.API_URL || 'http://195.35.37.39:5001'; 
 
   const fetchData = async () => {
     try {
@@ -24,6 +24,7 @@ const useFetchWithToken = (endpoint) => {
       const response = await axios.get(`${apiUrl}/${endpoint}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
+          'tennant':'web'
         },
       });
       setData(response.data);
@@ -55,6 +56,8 @@ const useFetchWithToken = (endpoint) => {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
+          'tennant':'web'
+
         },
       });
       setData(response.data);
@@ -74,6 +77,8 @@ const useFetchWithToken = (endpoint) => {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
+          'tennant':'web'
+
         },
       });
       
@@ -94,6 +99,8 @@ const useFetchWithToken = (endpoint) => {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
+          'tennant':'web'
+
         },
       });
       
@@ -113,6 +120,8 @@ const useFetchWithToken = (endpoint) => {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
+          'tennant':'web'
+
         },
       });
       setData(response.data);
@@ -133,6 +142,8 @@ const useFetchWithToken = (endpoint) => {
       const response = await axios.delete(`${apiUrl}/${endpoint}/${urlParam}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
+          'tennant':'web'
+
         },
       });
       setData(response.data); // No data returned after delete
