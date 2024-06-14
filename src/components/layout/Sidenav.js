@@ -102,8 +102,7 @@ function Sidenav({ color }) {
       <hr />
       <Menu theme="light" mode="inline">
       <Menu.Item className="menu-item-header" key="55">
-Wekil Zewari      
-  </Menu.Item>
+General Management  </Menu.Item>
         <Menu.Item key="1">
           <NavLink to="/dashboard">
             <span
@@ -130,8 +129,73 @@ Wekil Zewari
             <span className="label">Drivers</span>
           </NavLink>
         </Menu.Item>
+        <Menu.Item key="51235">
+          <NavLink to="/passengers">
+            <span
+              className="icon"
+              style={{
+                background: page === "tables" ? color : "",
+              }}
+            >
+<CheckCircleFilled color="blue" />              </span>
+            <span className="label">Passengers</span>
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item key="512353">
+          <NavLink to="/vehicles">
+            <span
+              className="icon"
+              style={{
+                background: page === "tables" ? color : "",
+              }}
+            >
+<CheckCircleFilled color="blue" />              </span>
+            <span className="label">Vehicles</span>
+          </NavLink>
+        </Menu.Item>
 
+        <Menu.Item key="51222135">
+          <NavLink to="/trips">
+            <span
+              className="icon"
+              style={{
+                background: page === "tables" ? color : "",
+              }}
+            >
+<CheckCircleFilled color="blue" />              </span>
+            <span className="label">Trips</span>
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item className="menu-item-header" key="5">
+Configuration        </Menu.Item>
 
+     
+        <Menu.Item key="51235323">
+          <NavLink to="/vehicleTypes">
+            <span
+              className="icon"
+              style={{
+                background: page === "tables" ? color : "",
+              }}
+            >
+<CheckCircleFilled color="blue" />              </span>
+            <span className="label">Vehicle Types</span>
+          </NavLink>
+        </Menu.Item>
+
+        <Menu.Item key="512353323">
+          <NavLink to="/initialPrices">
+            <span
+              className="icon"
+              style={{
+                background: page === "tables" ? color : "",
+              }}
+            >
+<CheckCircleFilled color="blue" />              </span>
+            <span className="label">Initial Prices</span>
+          </NavLink>
+        </Menu.Item>
+       
      {/* <Menu.Item key="2">
           <NavLink to="/tables">
             <span

@@ -16,8 +16,21 @@ import Profile from "./pages/Profile";
 import Main from "./components/layout/Main";
 import Drivers from "./components/drivers/drivers";
 
+import Passengers from "./components/passengers/passengers";
+import Trips from "./components/trips/trips";
+import Vehicles from "./components/vehicles/vehicles";
+import VehicleTypes from "./components/vehicleTypes/vehicleTypes";
+import InitialPrices from "./components/initialPrices/initialPrices";
+
+
+
+
 
 import DriversDetail from "./components/drivers/detail";
+import PassengersDetail from "./components/passengers/detail";
+import VehiclesDetail from "./components/vehicles/detail";
+
+
 
 
 import User from "./components/userManagement/user";
@@ -30,6 +43,7 @@ import "antd/dist/antd.css";
 import "./assets/styles/main.css";
 import "./assets/styles/responsive.css";
 import UpdateProfile from "./components/userManagement/updateProfile";
+import TripDetail from "./components/trips/detail";
 
 
 
@@ -46,6 +60,19 @@ function App() {
           <Route exact path="/profile" component={Profile} />
           <Route exact path="/drivers" component={Drivers} />
           <Route exact path="/driverDetails/:id" component={DriversDetail} />
+          <Route exact path="/passengers" component={Passengers} />
+          <Route exact path="/trips" component={Trips} />
+          <Route exact path="/vehicleTypes" component={VehicleTypes} />
+          <Route exact path="/initialPrices" component={InitialPrices} />
+
+
+
+          <Route exact path="/vehicles" component={Vehicles} />
+
+          <Route exact path="/passengerDetails/:id" component={PassengersDetail} />
+          <Route exact path="/tripDetails/:id" component={TripDetail} />
+
+          <Route exact path="/vehicleDetails/:id" component={VehiclesDetail} />
 
 
 
