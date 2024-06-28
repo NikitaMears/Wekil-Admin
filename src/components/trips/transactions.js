@@ -7,7 +7,7 @@ import { useHistory } from 'react-router-dom';
 
 const { Search } = Input;
 
-const Trips = () => {
+const Transactions = () => {
   const [irModalVisible, setProjectModalVisible] = useState(false);
   const [formData, setFormData] = useState({});
   const [uploading, setUploading] = useState(false);
@@ -102,16 +102,12 @@ const Trips = () => {
       render: (text, record) => `${record.passenger.firstName} ${record.passenger.lastName}`,
     },
     {
-      title: 'Start Location',
-      dataIndex: 'from',
-      key: 'from',
-    },
-    {
-      title: 'End Location',
-      dataIndex: 'to',
-      key: 'to',
-      width: 300,
-    },
+        title: 'Price',
+        dataIndex: 'price',
+        key: 'price',
+      },
+  
+
     {
       title: 'Date',
       dataIndex: 'pickUpTime',
@@ -120,9 +116,11 @@ const Trips = () => {
     },
    
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
+      title: 'Payment Method',
+      dataIndex: 'paymentMethod',
+      key: 'paymentMethod',
+      render: (text) => text || 'Cash',
+
     },
 
     {
@@ -158,7 +156,6 @@ const Trips = () => {
           dataSource={data}
           pagination={{ pageSize: 5 }}
           className="ant-border-space"
-          scroll={{ x: 2000, y: 400 }}
         />
       </div>
     );
@@ -196,4 +193,4 @@ const Trips = () => {
   );
 };
 
-export default Trips;
+export default Transactions;

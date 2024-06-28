@@ -15,12 +15,18 @@ import Profile from "./pages/Profile";
 
 import Main from "./components/layout/Main";
 import Drivers from "./components/drivers/drivers";
+import ActiveDrivers from "./components/drivers/activeDrivers";
+
 
 import Passengers from "./components/passengers/passengers";
 import Trips from "./components/trips/trips";
 import Vehicles from "./components/vehicles/vehicles";
 import VehicleTypes from "./components/vehicleTypes/vehicleTypes";
 import InitialPrices from "./components/initialPrices/initialPrices";
+import Transactions from "./components/trips/transactions";
+
+import SearchRadiuses from "./components/searchRadiuses/searchRadiuses";
+
 
 
 
@@ -59,11 +65,17 @@ function App() {
           <Route exact path="/dashboard" component={Home} />
           <Route exact path="/profile" component={Profile} />
           <Route exact path="/drivers" component={Drivers} />
+          <Route exact path="/activeDrivers" component={ActiveDrivers} />
+
           <Route exact path="/driverDetails/:id" component={DriversDetail} />
           <Route exact path="/passengers" component={Passengers} />
           <Route exact path="/trips" component={Trips} />
           <Route exact path="/vehicleTypes" component={VehicleTypes} />
           <Route exact path="/initialPrices" component={InitialPrices} />
+          <Route exact path="/searchRadius" component={SearchRadiuses} />
+          <Route exact path="/transactions" component={Transactions} />
+
+
 
 
 

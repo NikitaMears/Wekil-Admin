@@ -24,7 +24,7 @@ function Footer() {
             © 2024, made with
             {<HeartFilled />} by
             <a href="#pablo" className="font-weight-bold" target="_blank">
-Frontieri            </a>
+Wekil Zewari            </a>
             
           </div>
         </Col>

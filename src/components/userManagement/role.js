@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, Row, Col, Button, Table, Modal, Spin } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import RoleForm from './roleForm';
-import useFetchWithToken from '../../services/api';
+import useFetchWithToken from '../../services/api2';
 
 const Role = () => {
   const [roleModalVisible, setRoleModalVisible] = useState(false);

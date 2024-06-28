@@ -265,7 +265,7 @@ function Home() {
       datasets: [
         {
           label: 'Count',
-          backgroundColor: '#e94f24',
+          backgroundColor: '#470c8c',
           borderColor: 'rgba(75,192,192,1)',
           borderWidth: 1,
           hoverBackgroundColor: 'rgba(75,192,192,0.6)',
@@ -466,7 +466,7 @@ function Home() {
           
           </>
         )}
-        <Col xs={24} sm={24} md={12} lg={12} xl={10} className="mb-24">
+        {/* <Col xs={24} sm={24} md={12} lg={12} xl={10} className="mb-24">
           <Card bordered={false} title={'TP Summary'} className="criclebox h-full">
             <div>
               <Table
@@ -481,7 +481,7 @@ function Home() {
               />
             </div>
           </Card>
-        </Col>
+        </Col> */}
       </Row>
    
     </div>

@@ -11,7 +11,7 @@ import {
   Switch,
   message
 } from "antd";
-import signinbg from "../../assets/images/logo3_cropped.png";
+import signinbg from "../../assets/images/wekil.jpg";
 
 
 const { Title } = Typography;
@@ -62,7 +62,7 @@ class Login extends Component {
         <Layout className="layout-default layout-signin">
           <Header>
             <div className="header-col header-brand">
-              <h5>KMS</h5>
+              <h5>Wekil Zewari</h5>
             </div>
           </Header>
           <Content className="signin">
@@ -144,7 +144,7 @@ class Login extends Component {
           <Footer>
             <p className="copyright" style={{ marginTop: 200 }}>
               {" "}
-              Copyright © 2024 <a href="#frontieri.com">Frontieri</a>{" "}
+              Copyright © 2024 <a href="#frontieri.com">Wekil Zewari</a>{" "}
             </p>
           </Footer>
         </Layout>
