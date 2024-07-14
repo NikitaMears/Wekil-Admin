@@ -7,7 +7,7 @@ import useFetchWithToken from '../../services/api';
 
 const { TabPane } = Tabs;
 
-const TripDetail = () => {
+const ReservationDetail = () => {
   const [fileList, setFileList] = useState([]);
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
@@ -297,4 +297,4 @@ const TripDetail = () => {
   );
 };
 
-export default TripDetail;
+export default ReservationDetail;

@@ -72,6 +72,15 @@ function Sidenav({ color }) {
             </NavLink>
           </Menu.Item>
 
+          <Menu.Item key="reservations">
+            <NavLink to="/reservations">
+              <span className="icon">
+                <CheckCircleFilled style={{ color: "blue" }} />
+              </span>
+              <span className="label">Reservations</span>
+            </NavLink>
+          </Menu.Item>
+
           <Menu.Item key="transactions">
             <NavLink to="/transactions">
               <span className="icon">
@@ -80,7 +89,15 @@ function Sidenav({ color }) {
               <span className="label">Transactions</span>
             </NavLink>
           </Menu.Item>
+          <Menu.Item key="companies">
+            <NavLink to="/companies">
+              <span className="icon">{profile}</span>
+              <span className="label">Companies</span>
+            </NavLink>
+          </Menu.Item>
         </Menu.SubMenu>
+     
+ 
 
         <Menu.SubMenu key="configuration" title="Configuration">
           <Menu.Item key="vehicleTypes">
@@ -109,6 +126,7 @@ function Sidenav({ color }) {
           </Menu.Item> */}
         </Menu.SubMenu>
 
+    
         <Menu.SubMenu key="user-management" title="User Management">
           <Menu.Item key="users">
             <NavLink to="/users">

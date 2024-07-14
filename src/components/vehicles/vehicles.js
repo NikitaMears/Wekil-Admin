@@ -68,7 +68,7 @@ const Vehicles = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://195.35.37.39:5001/vehicles");
+      const response = await axios.get("http://194.164.72.21:5001/vehicles");
       setVehiclesData(response.data);
       setFilteredData(response.data);
       setLoading(false);
@@ -233,7 +233,7 @@ const Vehicles = () => {
                       <div style={{ width: "100%", height: "400px" }}>
                         <DocViewer
                           pluginRenderers={DocViewerRenderers}
-                          documents={selectedRow.documents ? [`http://195.35.37.39:5001${selectedRow.documents}`] : []}
+                          documents={selectedRow.documents ? [`http://194.164.72.21:5001${selectedRow.documents}`] : []}
                           config={{
                             header: {
                               disableHeader: false,

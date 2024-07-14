@@ -48,7 +48,7 @@ const DriversForm = ({ formData, setFormData, closeModal, refetchData }) => {
       }
 
       if (response?.passenger?.id) {
-        await uploadFiles(`http://195.35.37.39:5001/passengers/updateDocuments/${response.passenger.id}`, response.passenger.id);
+        await uploadFiles(`http://194.164.72.21:5001/passengers/updateDocuments/${response.passenger.id}`, response.passenger.id);
 
         message.success('Passenger and documents uploaded successfully');
       } else {

@@ -27,7 +27,7 @@ function VehicleTypesDetail() {
 
   const fetchVehicleData = async () => {
     try {
-      const vehicleResponse = await axios.get(`http://195.35.37.39:5001/vehicleTypes/${id}`);
+      const vehicleResponse = await axios.get(`http://194.164.72.21:5001/vehicleTypes/${id}`);
       setVehicleData(vehicleResponse.data.vehicleType);
 
       setDriverData(vehicleResponse.data.driver);
@@ -54,7 +54,7 @@ setVehicleTypeData(vehicleResponse.data.vehicleType)
     formData.append("file", fileList[0]);
 
     try {
-      await axios.post(`http://195.35.37.39:5001/uploadDriverDocument/${id}`, formData);
+      await axios.post(`http://194.164.72.21:5001/uploadDriverDocument/${id}`, formData);
       message.success("File uploaded successfully!");
       setFileList([]);
     } catch (error) {
@@ -82,7 +82,7 @@ setVehicleTypeData(vehicleResponse.data.vehicleType)
 
 
   const renderImage = (src, alt) => (
-    src ? <img src={`http://195.35.37.39:5001${src}`} alt={alt} style={{ width: "100%", height: "400px", objectFit: "cover", marginBottom: "10px", cursor: 'pointer' }} onClick={() => handlePreview(`http://195.35.37.39:5001${src}`)} />
+    src ? <img src={`http://194.164.72.21:5001${src}`} alt={alt} style={{ width: "100%", height: "400px", objectFit: "cover", marginBottom: "10px", cursor: 'pointer' }} onClick={() => handlePreview(`http://194.164.72.21:5001${src}`)} />
       : <Avatar shape="square" icon={<UserOutlined />} style={{ width: "100%", height: "400px", marginBottom: "10px" }} />
   );
 

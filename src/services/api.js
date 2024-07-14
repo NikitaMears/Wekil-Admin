@@ -13,7 +13,7 @@ const useFetchWithToken = (endpoint) => {
   if (!token) {
     // Redirect to login page if token is not found
     history.push('/login');
-  }  const apiUrl = process.env.API_URL || 'http://195.35.37.39:5001'; 
+  }  const apiUrl = process.env.API_URL || 'http://194.164.72.21:5001'; 
 
   const fetchData = async () => {
     try {

@@ -7,8 +7,7 @@ import { useHistory } from 'react-router-dom';
 
 const { Search } = Input;
 
-const Transactions = () => {
-  const [irModalVisible, setProjectModalVisible] = useState(false);
+const Reservations = () => {
   const [formData, setFormData] = useState({});
   const [uploading, setUploading] = useState(false);
   const [selectedColumns, setSelectedColumns] = useState([]); // State for selected columns
@@ -31,11 +30,6 @@ const Transactions = () => {
     fetchData();
   }, [submitted]);
 
-  const handleAddTrip = () => {
-    setFormData({});
-    setProjectModalVisible(true);
-  };
-
   const handleRowClick = (record) => {
     setSelectedRow(record);
     setDetailsVisible(true);
@@ -43,6 +37,7 @@ const Transactions = () => {
 
   const handleCloseDetails = () => {
     setSelectedRow(null);
+    setDetailsVisible(false);
   };
 
   const handleUpload = async ({ file }) => {
@@ -63,7 +58,7 @@ const Transactions = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://194.164.72.21:5001/trips");
+      const response = await axios.get("http://194.164.72.21:5001/reservations");
       setTripsData(response.data);
       setFilteredData(response.data);
       setLoading(false);
@@ -93,53 +88,60 @@ const Transactions = () => {
       title: 'Driver Name',
       dataIndex: ['driver', 'firstName'],
       key: 'driverName',
-      render: (text, record) => `${record.driver.firstName} ${record.driver.lastName}`,
+      render: (text, record) => record.driver ? `${record.driver.firstName} ${record.driver.lastName}` : 'N/A',
     },
     {
       title: 'Passenger Name',
-      dataIndex: ['passenger', 'passengerName'],
-      key: 'driverName',
-      render: (text, record) => `${record.passenger.firstName} ${record.passenger.lastName}`,
+      dataIndex: 'passengerId',
+      key: 'passengerId',
+      render: (text, record) => record.passenger ? `${record.passenger.firstName} ${record.passenger.lastName}` : 'N/A',
     },
     {
-        title: 'Price',
-        dataIndex: 'price',
-        key: 'price',
-      },
-  
-
+      title: 'Start Location',
+      dataIndex: 'from',
+      key: 'from',
+    },
+    {
+      title: 'End Location',
+      dataIndex: 'to',
+      key: 'to',
+      width: 300,
+    },
     {
       title: 'Date',
-      dataIndex: 'pickUpTime',
-      key: 'pickUpTime',
-      render: (text) => new Date(text).toLocaleString(),
+      dataIndex: 'pickUpDate',
+      key: 'pickUpDate',
+      render: (text) => text ? new Date(text).toLocaleString() : 'N/A',
     },
-   
     {
-      title: 'Payment Method',
-      dataIndex: 'paymentMethod',
-      key: 'paymentMethod',
-      render: (text) => text || 'Cash',
-
+      title: 'Distance',
+      dataIndex: 'distance',
+      key: 'distance',
     },
-
+    {
+      title: 'Price',
+      dataIndex: 'price',
+      key: 'price',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+    },
     {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
-        <>
-          <Button type="link">
-            <NavLink to={`/tripDetails/${record.id}`} style={{ color: 'green' }}>
-              <InfoCircleOutlined /> &nbsp;Details
-            </NavLink>
-          </Button>
-        </>
+        <Button type="link">
+          <NavLink to={`/reservationDetails/${record.id}`} style={{ color: 'green' }}>
+            <InfoCircleOutlined /> &nbsp;Details
+          </NavLink>
+        </Button>
       ),
     },
   ];
 
   const DynamicTable = ({ columns: initialColumns, data }) => {
-    // Initialize displayed columns with all available columns
     const defaultDisplayedColumns = initialColumns.map(column => column.key);
     const [displayedColumns, setDisplayedColumns] = useState(defaultDisplayedColumns);
 
@@ -156,6 +158,7 @@ const Transactions = () => {
           dataSource={data}
           pagination={{ pageSize: 5 }}
           className="ant-border-space"
+          scroll={{ x: 2000, y: 400 }}
         />
       </div>
     );
@@ -193,4 +196,4 @@ const Transactions = () => {
   );
 };
 
-export default Transactions;
+export default Reservations;

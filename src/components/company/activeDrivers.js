@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Row, Col, message, Input, Tabs, Button, Table, Modal, Upload, Checkbox, Dropdown, Tooltip, Spin } from 'antd';
 import { PlusOutlined, SearchOutlined, EditOutlined, DeleteOutlined, InfoCircleOutlined, ToTopOutlined, DownOutlined } from '@ant-design/icons';
-import DriversForm from './driversForm'; // Import the DriversForm component
+import DriversForm from './companyForm'; // Import the DriversForm component
 import useFetchWithToken from '../../services/api';
 import { NavLink } from "react-router-dom";
 import axios from 'axios';
@@ -36,35 +36,6 @@ const ActiveDrivers = () => {
     fetchData(); // Fetch data when component mounts
   }, [submitted]);
 
-  const fetchDriverDetails = async (driverId) => {
-    try {
-      const response = await axios.get(`http://194.164.72.21:5001/drivers/${driverId}`, {
-        headers: { 'tennant': 'web' }
-      });
-      return response.data.driver;
-    } catch (error) {
-      console.error(`Unable to fetch driver details for driverId ${driverId}`, error);
-      return null;
-    }
-  };
-
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get("http://194.164.72.21:5001/drivers/active");
-      const driversWithDetails = await Promise.all(response.data.map(async driver => {
-        const driverDetails = await fetchDriverDetails(driver.driverId);
-        return { ...driver, ...driverDetails };
-      }));
-      setDriversData(driversWithDetails);
-      setFilteredData(driversWithDetails);
-      setLoading(false);
-    } catch (error) {
-      message.error("Unable to load data!");
-      setLoading(false);
-    }
-  };
-
   const handleAddDriver = () => {
     setFormData({});
     setProjectModalVisible(true);
@@ -96,6 +67,19 @@ const ActiveDrivers = () => {
     }
   };
 
+  const fetchData = async () => {
+    try {
+      setLoading(true)
+      const response = await axios.get("http://194.164.72.21:5001/drivers/active");
+      setDriversData(response.data);
+      setFilteredData(response.data);
+      setLoading(false)
+    } catch (error) {
+      message.error("Unable to load data!");
+      setLoading(false);
+    }
+  };
+
   const handleSearch = (value) => {
     setSearchQuery(value);
     const filteredData = driversData.filter(driver =>
@@ -110,8 +94,7 @@ const ActiveDrivers = () => {
     { title: 'First Name', dataIndex: 'firstName', key: 'firstName' },
     { title: 'Last Name', dataIndex: 'lastName', key: 'lastName' },
     { title: 'Phone Number', dataIndex: 'phoneNumber', key: 'phoneNumber' },
-    { title: 'Lattitude', dataIndex: 'currentLat', key: 'currentLat' },
-    { title: 'Longitude', dataIndex: 'currentLon', key: 'currentLon' },
+    { title: 'Email', dataIndex: 'email', key: 'email' },
     { title: 'Status', dataIndex: 'status', key: 'status' },
     {
       title: 'Actions',
@@ -119,7 +102,7 @@ const ActiveDrivers = () => {
       render: (_, record) => (
         <>
           <Button type="link" icon={<EditOutlined />} onClick={() => handleEditDriver(record)} style={{ marginRight: 8 }}>Edit</Button>
-          <Button type="link"><NavLink to={`/driverDetails/${record.driverId}`} style={{ color: 'green' }}><InfoCircleOutlined /> &nbsp;Details</NavLink></Button>
+          <Button type="link"><NavLink to={`/driverDetails/${record.id}`} style={{ color: 'green' }}><InfoCircleOutlined /> &nbsp;Details</NavLink></Button>
         </>
       ),
     },
@@ -184,7 +167,23 @@ const ActiveDrivers = () => {
   return (
     <div>
       <Card>
- 
+        <Row gutter={[24, 0]}>
+        <Col span={12} style={{ textAlign: 'left' }}>
+            <Button type="primary" icon={<PlusOutlined />} onClick={handleAddDriver}>
+              Add Driver
+            </Button>
+          </Col>
+          <Col span={12}>
+            <Search
+              placeholder="Search Drivers"
+              allowClear
+              enterButton={<SearchOutlined />}
+              onSearch={handleSearch}
+              onChange={e => handleSearch(e.target.value)}
+            />
+          </Col>
+         
+        </Row>
         <Row gutter={[16, 16]}>
           <Col xs={24} xl={selectedRow ? 12 : 24}>
             {loading ? (

@@ -70,7 +70,7 @@ const Passengers = () => {
   const fetchData = async () => {
     try {
       setLoading(true)
-      const response = await axios.get("http://195.35.37.39:5001/passengers");
+      const response = await axios.get("http://194.164.72.21:5001/passengers");
       setPassengersData(response.data);
       setFilteredData(response.data);
       setLoading(false)
@@ -224,7 +224,7 @@ const Passengers = () => {
                       <div style={{ width: "100%", height: "400px" }}>
                         <DocViewer
                           pluginRenderers={DocViewerRenderers}
-                          documents={selectedRow.documents ? `http://195.35.37.39:5001${selectedRow.documents}` : []}
+                          documents={selectedRow.documents ? `http://194.164.72.21:5001${selectedRow.documents}` : []}
                           config={{
                             header: {
                               disableHeader: false,

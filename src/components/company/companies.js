@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Row, Col, message, Input, Tabs, Button, Table, Modal, Upload, Checkbox, Dropdown, Tooltip, Spin } from 'antd';
 import { PlusOutlined, SearchOutlined, EditOutlined, DeleteOutlined, InfoCircleOutlined, ToTopOutlined, DownOutlined } from '@ant-design/icons';
-import DriversForm from './driversForm'; // Import the DriversForm component
+import CompanyForm from './companyForm'; // Import the CompanyForm component
 import useFetchWithToken from '../../services/api';
 import { NavLink } from "react-router-dom";
 import axios from 'axios';
-import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import { useHistory } from 'react-router-dom';
 
 const { TabPane } = Tabs;
 const { Search } = Input;
 
-const ActiveDrivers = () => {
+const Companies = () => {
   const [irModalVisible, setProjectModalVisible] = useState(false);
   const [formData, setFormData] = useState({});
   const [uploading, setUploading] = useState(false);
   const [selectedColumns, setSelectedColumns] = useState([]); // Add state for selected columns
-  const defaultSelectedColumns = ['firstName', 'lastName', 'phoneNumber', 'email', 'status', 'actions']; // Default selected columns
-  const [driversData, setDriversData] = useState([]);
+  const defaultSelectedColumns = ['companyName', 'contactPerson', 'phoneNumber', 'balance', 'creditLimit', 'status', 'actions']; // Default selected columns
+  const [companiesData, setCompaniesData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRowDetails, setSelectedRowDetails] = useState(null); // State to hold selected row details
@@ -36,36 +35,7 @@ const ActiveDrivers = () => {
     fetchData(); // Fetch data when component mounts
   }, [submitted]);
 
-  const fetchDriverDetails = async (driverId) => {
-    try {
-      const response = await axios.get(`http://194.164.72.21:5001/drivers/${driverId}`, {
-        headers: { 'tennant': 'web' }
-      });
-      return response.data.driver;
-    } catch (error) {
-      console.error(`Unable to fetch driver details for driverId ${driverId}`, error);
-      return null;
-    }
-  };
-
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get("http://194.164.72.21:5001/drivers/active");
-      const driversWithDetails = await Promise.all(response.data.map(async driver => {
-        const driverDetails = await fetchDriverDetails(driver.driverId);
-        return { ...driver, ...driverDetails };
-      }));
-      setDriversData(driversWithDetails);
-      setFilteredData(driversWithDetails);
-      setLoading(false);
-    } catch (error) {
-      message.error("Unable to load data!");
-      setLoading(false);
-    }
-  };
-
-  const handleAddDriver = () => {
+  const handleAddCompany = () => {
     setFormData({});
     setProjectModalVisible(true);
   };
@@ -77,6 +47,7 @@ const ActiveDrivers = () => {
 
   const handleCloseDetails = () => {
     setSelectedRow(null);
+    setDetailsVisible(false);
   };
 
   const handleUpload = async ({ file }) => {
@@ -87,59 +58,72 @@ const ActiveDrivers = () => {
 
       // Handle successful upload
       message.success(`${file.name} uploaded successfully`);
-      setUploading(false)
+      setUploading(false);
     } catch (error) {
       // Handle upload error
-      console.log(error)
+      console.log(error);
       message.error(`${file.name} upload failed.`);
-      setUploading(false)
+      setUploading(false);
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get("http://194.164.72.21:5001/companies");
+      setCompaniesData(response.data);
+      setFilteredData(response.data);
+      setLoading(false);
+    } catch (error) {
+      message.error("Unable to load data!");
+      setLoading(false);
     }
   };
 
   const handleSearch = (value) => {
     setSearchQuery(value);
-    const filteredData = driversData.filter(driver =>
-      Object.keys(driver).some(key =>
-        String(driver[key]).toLowerCase().includes(value.toLowerCase())
+    const filteredData = companiesData.filter(company =>
+      Object.keys(company).some(key =>
+        String(company[key]).toLowerCase().includes(value.toLowerCase())
       )
     );
     setFilteredData(filteredData);
   };
 
-  const driversColumns = [
-    { title: 'First Name', dataIndex: 'firstName', key: 'firstName' },
-    { title: 'Last Name', dataIndex: 'lastName', key: 'lastName' },
+  const companiesColumns = [
+    { title: 'Company Name', dataIndex: 'companyName', key: 'companyName' },
+    { title: 'Contact Person', dataIndex: 'contactPerson', key: 'contactPerson' },
     { title: 'Phone Number', dataIndex: 'phoneNumber', key: 'phoneNumber' },
-    { title: 'Lattitude', dataIndex: 'currentLat', key: 'currentLat' },
-    { title: 'Longitude', dataIndex: 'currentLon', key: 'currentLon' },
+    { title: 'Balance', dataIndex: 'balance', key: 'balance' },
+    { title: 'Credit Limit', dataIndex: 'creditLimit', key: 'creditLimit' },
     { title: 'Status', dataIndex: 'status', key: 'status' },
     {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
         <>
-          <Button type="link" icon={<EditOutlined />} onClick={() => handleEditDriver(record)} style={{ marginRight: 8 }}>Edit</Button>
-          <Button type="link"><NavLink to={`/driverDetails/${record.driverId}`} style={{ color: 'green' }}><InfoCircleOutlined /> &nbsp;Details</NavLink></Button>
+          <Button type="link" icon={<EditOutlined />} onClick={() => handleEditCompany(record)} style={{ marginRight: 8 }}>Edit</Button>
+          <Button type="link"><NavLink to={`/companyDetails/${record.id}`} style={{ color: 'green' }}><InfoCircleOutlined /> &nbsp;Details</NavLink></Button>
         </>
       ),
     },
   ];
 
-  const handleEditDriver = (record) => {
+  const handleEditCompany = (record) => {
     setFormData(record);
     setProjectModalVisible(true);
   };
 
   const ColumnSelector = () => (
     <Checkbox.Group
-      options={driversColumns.map(column => ({ label: column.title, value: column.key }))}
+      options={companiesColumns.map(column => ({ label: column.title, value: column.key }))}
       value={selectedColumns}
       onChange={(selected) => setSelectedColumns(selected)}
     />
   );
 
   const DynamicTable = ({ columns: initialColumns, data, onRow }) => {
-    const defaultDisplayedColumns = initialColumns.map(column => column.key).slice(0, 7); // Select first two columns by default
+    const defaultDisplayedColumns = initialColumns.map(column => column.key).slice(0, 7); // Select first seven columns by default
     const [displayedColumns, setDisplayedColumns] = useState(defaultDisplayedColumns);
 
     const handleColumnChange = (selectedColumns) => {
@@ -184,7 +168,22 @@ const ActiveDrivers = () => {
   return (
     <div>
       <Card>
- 
+        <Row gutter={[24, 0]}>
+          <Col span={12} style={{ textAlign: 'left' }}>
+            <Button type="primary" icon={<PlusOutlined />} onClick={handleAddCompany}>
+              Add Company
+            </Button>
+          </Col>
+          <Col span={12}>
+            <Search
+              placeholder="Search Companies"
+              allowClear
+              enterButton={<SearchOutlined />}
+              onSearch={handleSearch}
+              onChange={e => handleSearch(e.target.value)}
+            />
+          </Col>
+        </Row>
         <Row gutter={[16, 16]}>
           <Col xs={24} xl={selectedRow ? 12 : 24}>
             {loading ? (
@@ -193,8 +192,8 @@ const ActiveDrivers = () => {
               </div>
             ) : (
               <DynamicTable onRow={(record) => ({
-                // onClick: () => handleRowClick(record),
-              })} columns={driversColumns} data={filteredData} pagination={{ pageSize: 5 }} />
+                onClick: () => handleRowClick(record),
+              })} columns={companiesColumns} data={filteredData} pagination={{ pageSize: 5 }} />
             )}
           </Col>
           <Col xs={24} xl={12}>
@@ -203,42 +202,27 @@ const ActiveDrivers = () => {
                 <Tabs defaultActiveKey="1">
                   <TabPane tab="Details" key="1">
                     <Card
-                      title={`Details of ${selectedRow.firstName} ${selectedRow.lastName}`}
+                      title={`Details of ${selectedRow.companyName}`}
                       style={{ height: "500px", overflow: "auto" }}
                       headStyle={{ position: 'sticky', top: '0', zIndex: '1', background: '#fff' }}
                       extra={
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                           <Button type="link" onClick={handleCloseDetails} style={{ color: 'red' }}>Close</Button>
-                          <Button type="link" onClick={() => history.push(`/driverDetails/${selectedRow.id}`)} style={{ color: 'green' }}>Details</Button>
+                          <Button type="link" onClick={() => history.push(`/companyDetails/${selectedRow.id}`)} style={{ color: 'green' }}>Details</Button>
                         </div>
                       }
                     >
+                      <p>Contact Person: {selectedRow.contactPerson}</p>
                       <p>Phone Number: {selectedRow.phoneNumber}</p>
-                      <p>Email: {selectedRow.email}</p>
+                      <p>Balance: {selectedRow.balance}</p>
+                      <p>Credit Limit: {selectedRow.creditLimit}</p>
                       <p>Status: {selectedRow.status}</p>
                       <p>Address: {selectedRow.address}</p>
-                      <p>Rating: {selectedRow.rating}</p>
+                      <p>Start Date: {new Date(selectedRow.startDate).toLocaleDateString()}</p>
+                      <p>End Date: {new Date(selectedRow.endDate).toLocaleDateString()}</p>
                     </Card>
                   </TabPane>
-                  <TabPane tab="File Preview" key="2">
-                    <Card bordered={false} className="header-solid h-full">
-                      <h4>Driver Preview:</h4>
-                      <div style={{ width: "100%", height: "400px" }}>
-                        <DocViewer
-                          pluginRenderers={DocViewerRenderers}
-                          documents={selectedRow.documents ? `http://194.164.72.21:5001${selectedRow.documents}` : []}
-                          config={{
-                            header: {
-                              disableHeader: false,
-                              disableFileName: true,
-                              retainURLParams: false
-                            }
-                          }}
-                          style={{ height: 400 }}
-                        />
-                      </div>
-                    </Card>
-                  </TabPane>
+                 
                 </Tabs>
               </div>
             )}
@@ -247,16 +231,16 @@ const ActiveDrivers = () => {
       </Card>
   
       <Modal
-        title={formData.id ? 'Edit Driver' : 'Add Driver'}
+        title={formData.id ? 'Edit Company' : 'Add Company'}
         visible={irModalVisible}
         onCancel={() => setProjectModalVisible(false)}
         footer={null}
         width={800} // Adjust the width here as needed
       >
-        <DriversForm formData={formData} setFormData={setFormData} closeModal={() => setProjectModalVisible(false)} setSubmitted={setSubmitted} />
+        <CompanyForm formData={formData} setFormData={setFormData} closeModal={() => setProjectModalVisible(false)} setSubmitted={setSubmitted} />
       </Modal>
     </div>
   );
 };
 
-export default ActiveDrivers;
+export default Companies;

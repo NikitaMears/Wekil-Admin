@@ -19,7 +19,7 @@ const SearchRadiusesForm = ({ formData, setFormData, closeModal, setSubmitted })
 
   const fetchVehicleTypes = async () => {
     try {
-      const response = await axios.get("http://195.35.37.39:5001/initialPrices");
+      const response = await axios.get("http://194.164.72.21:5001/initialPrices");
       setVehicleTypes(response.data);
     } catch (error) {
       message.error("Unable to load vehicle types");
@@ -43,14 +43,14 @@ const SearchRadiusesForm = ({ formData, setFormData, closeModal, setSubmitted })
       let response;
       if (formData.id) {
         // Update vehicle
-        response = await axios.put(`http://195.35.37.39:5001/initialPrices/${formData.id}`, formData, {
+        response = await axios.put(`http://194.164.72.21:5001/initialPrices/${formData.id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
       } else {
         // Add new vehicle
-        response = await axios.post('http://195.35.37.39:5001/initialPrices', formData, {
+        response = await axios.post('http://194.164.72.21:5001/initialPrices', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }

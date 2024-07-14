@@ -63,7 +63,7 @@ const Trips = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://195.35.37.39:5001/trips");
+      const response = await axios.get("http://194.164.72.21:5001/trips");
       setTripsData(response.data);
       setFilteredData(response.data);
       setLoading(false);

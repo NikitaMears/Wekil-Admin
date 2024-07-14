@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Upload, Select, Row, Col, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import useFetchWithToken from '../../services/api';
 import axios from 'axios';
 
 const { Option } = Select;
 
-const DriversForm = ({ formData, setFormData, closeModal, refetchData }) => {
+const CompanyForm = ({ formData, setFormData, closeModal, refetchData }) => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [imageFileList, setImageFileList] = useState([]);
   const [licenceFileList, setLicenceFileList] = useState([]);
-  const { postFormData, putFormData } = useFetchWithToken('drivers');
 
   useEffect(() => {
     form.setFieldsValue(formData);
@@ -21,7 +19,7 @@ const DriversForm = ({ formData, setFormData, closeModal, refetchData }) => {
   const handleImageFileChange = ({ fileList }) => setImageFileList(fileList);
   const handleLicenceFileChange = ({ fileList }) => setLicenceFileList(fileList);
 
-  const uploadFiles = async (url, driverId) => {
+  const uploadFiles = async (url, companyId) => {
     const formData = new FormData();
 
     fileList.forEach(({ originFileObj }) => {
@@ -29,15 +27,15 @@ const DriversForm = ({ formData, setFormData, closeModal, refetchData }) => {
     });
 
     imageFileList.forEach(({ originFileObj }) => {
-      formData.append("driverImage", originFileObj);
+      formData.append("companyImage", originFileObj);
     });
 
     licenceFileList.forEach(({ originFileObj }) => {
-      formData.append("driverLicence", originFileObj);
+      formData.append("companyLicence", originFileObj);
     });
 
     await axios.put(url, formData, {
-      headers: { 'Content-Type': 'multipart/form-data', 'tennant':'web' },
+      headers: { 'Content-Type': 'multipart/form-data' },
     });
   };
 
@@ -46,19 +44,19 @@ const DriversForm = ({ formData, setFormData, closeModal, refetchData }) => {
       let response;
 
       if (formData.id) {
-        // Update driver
-        response = await putFormData(values, `drivers/${formData.id}`);
+        // Update company
+        response = await axios.put(`http://194.164.72.21:5001/companies/${formData.id}`, values);
       } else {
-        // Add new driver
-        response = await postFormData(values, 'drivers');
+        // Add new company
+        response = await axios.post('http://194.164.72.21:5001/companies', values);
       }
 
-      if (response?.driver?.id) {
-        await uploadFiles(`http://194.164.72.21:5001/drivers/updateDocuments/${response.driver.id}`, response.driver.id);
+      if (response?.data?.id) {
+        await uploadFiles(`http://194.164.72.21:5001/companies/updateDocuments/${response.data.id}`, response.data.id);
 
-        message.success('Driver and documents uploaded successfully');
+        message.success('Company and documents uploaded successfully');
       } else {
-        message.success('Driver saved successfully');
+        message.success('Company saved successfully');
       }
 
       setFormData({});
@@ -66,7 +64,7 @@ const DriversForm = ({ formData, setFormData, closeModal, refetchData }) => {
       refetchData(); // Trigger refetch after successful form submission
     } catch (error) {
       console.error('Error:', error);
-      message.error('Failed to save driver');
+      message.error('Failed to save company');
     }
   };
 
@@ -74,12 +72,12 @@ const DriversForm = ({ formData, setFormData, closeModal, refetchData }) => {
     <Form form={form} onFinish={onFinish} layout="vertical">
       <Row gutter={16}>
         <Col span={12}>
-          <Form.Item label="First Name" name="firstName" rules={[{ required: true, message: 'Please enter a first name' }]}>
+          <Form.Item label="Company Name" name="companyName" rules={[{ required: true, message: 'Please enter a company name' }]}>
             <Input />
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item label="Last Name" name="lastName" rules={[{ required: true, message: 'Please enter a last name' }]}>
+          <Form.Item label="Contact Person" name="contactPerson" rules={[{ required: true, message: 'Please enter a contact person' }]}>
             <Input />
           </Form.Item>
         </Col>
@@ -91,29 +89,36 @@ const DriversForm = ({ formData, setFormData, closeModal, refetchData }) => {
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Please enter an email' }]}>
+          <Form.Item label="Address" name="address" rules={[{ required: true, message: 'Please enter an address' }]}>
             <Input />
           </Form.Item>
         </Col>
       </Row>
       <Row gutter={16}>
         <Col span={12}>
-          <Form.Item label="Password" name="password" rules={[{ required: true, message: 'Please enter a password' }]}>
+          <Form.Item label="Balance" name="balance" rules={[{ required: true, message: 'Please enter a balance' }]}>
             <Input />
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item label="Confirm Password" name="confPassword" rules={[{ required: true, message: 'Please confirm your password' }]}>
+          <Form.Item label="Credit Limit" name="creditLimit" rules={[{ required: true, message: 'Please enter a credit limit' }]}>
             <Input />
           </Form.Item>
         </Col>
       </Row>
       <Row gutter={16}>
         <Col span={12}>
-          <Form.Item label="Address" name="address">
-            <Input />
+          <Form.Item label="Start Date" name="startDate" rules={[{ required: true, message: 'Please enter a start date' }]}>
+            <Input type="date" />
           </Form.Item>
         </Col>
+        <Col span={12}>
+          <Form.Item label="End Date" name="endDate" rules={[{ required: true, message: 'Please enter an end date' }]}>
+            <Input type="date" />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row gutter={16}>
         <Col span={12}>
           <Form.Item label="Status" name="status">
             <Select>
@@ -121,13 +126,6 @@ const DriversForm = ({ formData, setFormData, closeModal, refetchData }) => {
               <Option value="Active">Active</Option>
               <Option value="Inactive">Inactive</Option>
             </Select>
-          </Form.Item>
-        </Col>
-      </Row>
-      <Row gutter={16}>
-        <Col span={12}>
-          <Form.Item label="Rating" name="rating">
-            <Input />
           </Form.Item>
         </Col>
       </Row>
@@ -145,7 +143,7 @@ const DriversForm = ({ formData, setFormData, closeModal, refetchData }) => {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="Driver Image" name="driverImage">
+          <Form.Item label="Company Image" name="companyImage">
             <Upload
               beforeUpload={() => false}
               fileList={imageFileList}
@@ -157,7 +155,7 @@ const DriversForm = ({ formData, setFormData, closeModal, refetchData }) => {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="Driver Licence" name="driverLicence">
+          <Form.Item label="Company Licence" name="companyLicence">
             <Upload
               beforeUpload={() => false}
               fileList={licenceFileList}
@@ -181,4 +179,4 @@ const DriversForm = ({ formData, setFormData, closeModal, refetchData }) => {
   );
 };
 
-export default DriversForm;
+export default CompanyForm;

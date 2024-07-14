@@ -16,7 +16,8 @@ function PassengersDetail() {
   const [searchQuery, setSearchQuery] = useState('');
   const { id } = useParams();
   const { data: passengerData, loading: passengerLoading, postFormData } = useFetchWithToken(`passengers/${id}`); // Fetch passenger details using useFetchWithToken hook
-  const { data: tripsData, loading: tripsLoading } = useFetchWithToken(`trips/passenger/${id}`); // Fetch passenger trips using useFetchWithToken hook
+  const { data: tripData, loading: tripsLoading } = useFetchWithToken(`trips/passenger/${id}`); // Fetch passenger trips using useFetchWithToken hook
+  const trips = tripData?.trips.map(item => ({ ...item.trip, passenger: item.passenger, driver: item.driver })) || [];
 
   const passenger = passengerData?.passenger;
 
@@ -48,7 +49,7 @@ function PassengersDetail() {
     setPreviewVisible(true);
   };
 
-  const filteredTrips = tripsData?.filter(trip => {
+  const filteredTrips = trips?.filter(trip => {
     const lowerCaseQuery = searchQuery.toLowerCase();
     return (
       trip.from.toLowerCase().includes(lowerCaseQuery) ||
@@ -111,7 +112,7 @@ function PassengersDetail() {
   ];
 
   const renderImage = (src, alt) => (
-    src ? <img src={`http://195.35.37.39:5001${src}`} alt={alt} style={{ width: "100%", height: "400px", objectFit: "cover", marginBottom: "10px", cursor: 'pointer' }} onClick={() => handlePreview(`http://195.35.37.39:5001${src}`)} />
+    src ? <img src={`http://194.164.72.21:5001${src}`} alt={alt} style={{ width: "100%", height: "400px", objectFit: "cover", marginBottom: "10px", cursor: 'pointer' }} onClick={() => handlePreview(`http://194.164.72.21:5001${src}`)} />
       : <Avatar shape="square" icon={<UserOutlined />} style={{ width: "100%", height: "400px", marginBottom: "10px" }} />
   );
 
