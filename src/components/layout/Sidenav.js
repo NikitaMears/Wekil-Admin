@@ -19,7 +19,7 @@ function Sidenav({ color }) {
     <>
       <div className="brand">
         <img src={logo} width={40} height={40} alt="" />
-        <span>Wekil Zewari</span>
+        <span>Minnesota Taxi</span>
       </div>
       <hr />
       <Menu theme="light" mode="inline" defaultOpenKeys={['general-management']}>

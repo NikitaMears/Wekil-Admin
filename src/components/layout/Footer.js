@@ -24,7 +24,7 @@ function Footer() {
             © 2024, made with
             {<HeartFilled />} by
             <a href="#pablo" className="font-weight-bold" target="_blank">
-Wekil Zewari            </a>
+Minnesota Taxi            </a>
             
           </div>
         </Col>
