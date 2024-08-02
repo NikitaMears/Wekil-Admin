@@ -20,7 +20,7 @@ const { Header, Footer, Content } = Layout;
 class Login extends Component {
   onFinish = async (values) => {
     try {
-        const apiUrl = process.env.API_URL || 'https://kmsbe.frontieri.com/kmsApi';
+        const apiUrl = process.env.API_URL || 'http://194.164.72.21:5001';
         const response = await fetch(`${apiUrl}/login`, {
     
         method: 'POST',
@@ -62,7 +62,7 @@ class Login extends Component {
         <Layout className="layout-default layout-signin">
           <Header>
             <div className="header-col header-brand">
-              <h5>Wekil Zewari</h5>
+              <h5>Minnesota Taxi</h5>
             </div>
           </Header>
           <Content className="signin">
@@ -144,7 +144,7 @@ class Login extends Component {
           <Footer>
             <p className="copyright" style={{ marginTop: 200 }}>
               {" "}
-              Copyright © 2024 <a href="#frontieri.com">Wekil Zewari</a>{" "}
+              Copyright © 2024 <a href="#frontieri.com">Minnesota Taxi</a>{" "}
             </p>
           </Footer>
         </Layout>

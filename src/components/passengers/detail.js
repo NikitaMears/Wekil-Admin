@@ -177,7 +177,7 @@ function PassengersDetail() {
                       beforeUpload={beforeUpload}
                       fileList={fileList}
                       maxCount={1}
-                      accept=".docx,.pdf"
+                      accept=".jpg, .jpeg, .png"
                     >
                       <Button type="dashed" className="ant-full-box" icon={<ToTopOutlined />} >
                         Upload File

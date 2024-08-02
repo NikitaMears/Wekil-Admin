@@ -15,7 +15,7 @@ const ChangePassword = ({ onClose, onOk }) => {
   useEffect(() => {
     const getUserData = async () => {
       try {
-        const response = await axios.get(`https://kmsbe.frontieri.com/kmsApi/users/${id}`, {
+        const response = await axios.get(`http://194.164.72.21:5001/users/${id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
@@ -49,12 +49,12 @@ const ChangePassword = ({ onClose, onOk }) => {
     }
 
     try {
-      await axios.put(`https://kmsbe.frontieri.com/kmsApi/users/change-password/${id}`, values, {
+      await axios.put(`http://194.164.72.21:5001/users/change-password/${id}`, values, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
-      const response = await axios.get(`https://kmsbe.frontieri.com/kmsApi/users/${id}`, {
+      const response = await axios.get(`http://194.164.72.21:5001/users/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },

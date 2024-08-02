@@ -181,7 +181,7 @@ function DriversDetail() {
                       beforeUpload={beforeUpload}
                       fileList={fileList}
                       maxCount={1}
-                      accept=".docx,.pdf"
+                      accept=".docx,.pdf, .png, .jpg, .jpeg"
                     >
                       <Button type="dashed" className="ant-full-box" icon={<ToTopOutlined />} >
                         Upload File

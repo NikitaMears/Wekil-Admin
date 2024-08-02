@@ -11,7 +11,7 @@ const RoleSelection = ({ roles, onChange }) => {
   }
   useEffect(() => {
     // Fetch roles from kms.dololoet.com:3003/roles
-    fetch('https://kmsbe.frontieri.com/kmsApi/roles',{
+    fetch('http://194.164.72.21:5001/roles',{
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',

@@ -48,7 +48,7 @@ const Permission = () => {
         throw new Error('Token not found');
       }
       setLoading(true);
-      const response = await fetch('https://kmsbe.frontieri.com/kmsApi/permissions', {
+      const response = await fetch('http://194.164.72.21:5001/permissions', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,

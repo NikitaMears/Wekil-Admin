@@ -56,6 +56,8 @@ import "./assets/styles/responsive.css";
 import UpdateProfile from "./components/userManagement/updateProfile";
 import TripDetail from "./components/trips/detail";
 import ReservationDetail from "./components/trips/reservationDetail";
+import Dispatch from "./components/dispatch/dispatch";
+
 
 
 
@@ -86,6 +88,8 @@ function App() {
           <Route exact path="/searchRadius" component={SearchRadiuses} />
           <Route exact path="/transactions" component={Transactions} />
           <Route exact path="/companyDetails/:id" component={CompanyDetails} />
+          <Route exact path="/dispatch" component={Dispatch} />
+
 
 
 
