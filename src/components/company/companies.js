@@ -157,7 +157,7 @@ const Companies = () => {
             dataSource={data}
             pagination={{ pageSize: 5 }}
             className="ant-border-space"
-            scroll={{ x: 1500, y: 400 }} // Adjust the scroll properties as needed
+            // scroll={{ x: 1500, y: 400 }} // Adjust the scroll properties as needed
             onRow={onRow} // Pass the onRow prop to the Table component
           />
         </div>

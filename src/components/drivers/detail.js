@@ -14,8 +14,9 @@ function DriversDetail() {
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState("1");
   const { id } = useParams();
-  const { data: driverData, loading: driverLoading, postFormData } = useFetchWithToken(`drivers/${id}`); // Fetch driver details using useFetchWithToken hook
+  const { data: driverData, loading: driverLoading, postFormData, putFormData } = useFetchWithToken(`drivers/${id}`); // Fetch driver details using useFetchWithToken hook
   const { data: tripData, loading: tripsLoading } = useFetchWithToken(`trips/driver/${id}`); // Fetch driver trips using useFetchWithToken hook
   const trips = tripData?.trips.map(item => ({ ...item.trip, passenger: item.passenger, driver: item.driver })) || [];
   const driver = driverData?.driver;
@@ -31,10 +32,11 @@ function DriversDetail() {
 
   const handleUpload = async () => {
     const formData = new FormData();
-    formData.append("file", fileList[0]);
+    const fieldName = activeTab === "1" ? "driverImage" : activeTab === "2" ? "documents" : "driverLicence";
+    formData.append(fieldName, fileList[0]);
 
     try {
-      await postFormData(formData, `uploadDriverDocument/${id}`); // Upload driver document using postFormData function from useFetchWithToken hook
+      await putFormData(formData, `drivers/updateDocuments/${id}`); // Upload driver document using postFormData function from useFetchWithToken hook
       message.success("File uploaded successfully!");
       setFileList([]);
     } catch (error) {
@@ -122,7 +124,7 @@ function DriversDetail() {
           <Spin size="large" />
         </div>
       ) : (
-        <Tabs defaultActiveKey="1">
+        <Tabs defaultActiveKey="1" onChange={setActiveTab}>
           <TabPane tab="Driver Details" key="1">
             <Row gutter={[24, 0]}>
               <Col span={24} md={12} className="mb-24">
@@ -143,15 +145,15 @@ function DriversDetail() {
                       <Descriptions.Item label="Phone Number" span={3}>
                         {driver && driver.phoneNumber}
                       </Descriptions.Item>
-                      <Descriptions.Item label="Email" span={3}>
+                      {/* <Descriptions.Item label="Email" span={3}>
                         {driver && driver.email}
-                      </Descriptions.Item>
+                      </Descriptions.Item> */}
                       <Descriptions.Item label="Status" span={3}>
                         {driver && driver.status}
                       </Descriptions.Item>
-                      <Descriptions.Item label="Address" span={3}>
+                      {/* <Descriptions.Item label="Address" span={3}>
                         {driver && driver.address}
-                      </Descriptions.Item>
+                      </Descriptions.Item> */}
                       <Descriptions.Item label="Rating" span={3}>
                         {driver && driver.rating}
                       </Descriptions.Item>

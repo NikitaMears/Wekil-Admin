@@ -144,15 +144,15 @@ function PassengersDetail() {
                       <Descriptions.Item label="Phone Number" span={3}>
                         {passenger && passenger.phoneNumber}
                       </Descriptions.Item>
-                      <Descriptions.Item label="Email" span={3}>
+                      {/* <Descriptions.Item label="Email" span={3}>
                         {passenger && passenger.email}
-                      </Descriptions.Item>
+                      </Descriptions.Item> */}
                       <Descriptions.Item label="Status" span={3}>
                         {passenger && passenger.status}
                       </Descriptions.Item>
-                      <Descriptions.Item label="Address" span={3}>
+                      {/* <Descriptions.Item label="Address" span={3}>
                         {passenger && passenger.address}
-                      </Descriptions.Item>
+                      </Descriptions.Item> */}
                       <Descriptions.Item label="Rating" span={3}>
                         {passenger && passenger.rating}
                       </Descriptions.Item>

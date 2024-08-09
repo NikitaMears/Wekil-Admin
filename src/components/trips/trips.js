@@ -158,7 +158,7 @@ const Trips = () => {
           dataSource={data}
           pagination={{ pageSize: 5 }}
           className="ant-border-space"
-          scroll={{ x: 2000, y: 400 }}
+          // scroll={{ x: 2000, y: 400 }}
         />
       </div>
     );
