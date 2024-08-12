@@ -83,54 +83,72 @@ const Reservations = () => {
       title: 'Trip ID',
       dataIndex: 'id',
       key: 'id',
+      width:'10%',
+
     },
     {
       title: 'Driver Name',
       dataIndex: ['driver', 'firstName'],
       key: 'driverName',
+      width:'10%',
+
       render: (text, record) => record.driver ? `${record.driver.firstName} ${record.driver.lastName}` : 'N/A',
     },
     {
       title: 'Passenger Name',
       dataIndex: 'passengerId',
       key: 'passengerId',
+      width:'10%',
+
       render: (text, record) => record.passenger ? `${record.passenger.firstName} ${record.passenger.lastName}` : 'N/A',
     },
     {
       title: 'Start Location',
       dataIndex: 'from',
       key: 'from',
+      width:'10%',
+
     },
     {
       title: 'End Location',
       dataIndex: 'to',
       key: 'to',
-      width: 300,
+      width:'10%',
     },
     {
       title: 'Date',
       dataIndex: 'pickUpDate',
       key: 'pickUpDate',
+      width:'10%',
+
       render: (text) => text ? new Date(text).toLocaleString() : 'N/A',
     },
     {
       title: 'Distance',
       dataIndex: 'distance',
       key: 'distance',
+      width:'10%',
+
     },
     {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
+      width:'10%',
+
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      width:'10%',
+
     },
     {
       title: 'Actions',
       key: 'actions',
+      width:'10%',
+
       render: (_, record) => (
         <Button type="link">
           <NavLink to={`/reservationDetails/${record.id}`} style={{ color: 'green' }}>

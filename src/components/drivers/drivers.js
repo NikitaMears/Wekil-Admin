@@ -91,14 +91,14 @@ const Drivers = () => {
   };
 
   const driversColumns = [
-    { title: 'First Name', dataIndex: 'firstName', key: 'firstName', width: '10%' },
-    { title: 'Last Name', dataIndex: 'lastName', key: 'lastName' , width: '10%'},
-    { title: 'Phone Number', dataIndex: 'phoneNumber', key: 'phoneNumber', width: '10%' },
+    { title: 'First Name', dataIndex: 'firstName', key: 'firstName', width: '20%' },
+    { title: 'Last Name', dataIndex: 'lastName', key: 'lastName' , width: '20%'},
+    { title: 'Phone Number', dataIndex: 'phoneNumber', key: 'phoneNumber', width: '20%' },
     // { title: 'Email', dataIndex: 'email', key: 'email' , width: '10%'},
-    { title: 'Status', dataIndex: 'status', key: 'status' , width: '10%'},
+    { title: 'Status', dataIndex: 'status', key: 'status' , width: '20%'},
     {
       title: 'Actions',
-       width: '10%',
+       width: '20%',
       key: 'actions',
       
       render: (_, record) => (

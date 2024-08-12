@@ -88,45 +88,58 @@ const Trips = () => {
       title: 'Trip ID',
       dataIndex: 'id',
       key: 'id',
+      width:'10%'
     },
     {
       title: 'Driver Name',
       dataIndex: ['driver', 'firstName'],
       key: 'driverName',
+      width:'10%',
+
       render: (text, record) => `${record.driver.firstName} ${record.driver.lastName}`,
     },
     {
       title: 'Passenger Name',
       dataIndex: ['passenger', 'passengerName'],
       key: 'driverName',
+      width:'10%',
+
       render: (text, record) => `${record.passenger.firstName} ${record.passenger.lastName}`,
     },
     {
       title: 'Start Location',
       dataIndex: 'from',
       key: 'from',
+      width:'10%',
+
     },
     {
       title: 'End Location',
       dataIndex: 'to',
       key: 'to',
-      width: 300,
+      width:'10%',
     },
     {
       title: 'Date',
       dataIndex: 'pickUpTime',
       key: 'pickUpTime',
+      width:'10%',
+
       render: (text) => new Date(text).toLocaleString(),
     },
    
     {
       title: 'Status',
+      width:'10%',
+
       dataIndex: 'status',
       key: 'status',
     },
 
     {
       title: 'Actions',
+      width:'10%',
+
       key: 'actions',
       render: (_, record) => (
         <>

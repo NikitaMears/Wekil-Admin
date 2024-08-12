@@ -88,23 +88,31 @@ const Transactions = () => {
       title: 'Trip ID',
       dataIndex: 'id',
       key: 'id',
+      width:'10%',
+
     },
     {
       title: 'Driver Name',
       dataIndex: ['driver', 'firstName'],
       key: 'driverName',
+      width:'10%',
+
       render: (text, record) => `${record.driver.firstName} ${record.driver.lastName}`,
     },
     {
       title: 'Passenger Name',
       dataIndex: ['passenger', 'passengerName'],
       key: 'driverName',
+      width:'10%',
+
       render: (text, record) => `${record.passenger.firstName} ${record.passenger.lastName}`,
     },
     {
         title: 'Price',
         dataIndex: 'price',
         key: 'price',
+        width:'10%',
+
       },
   
 
@@ -112,12 +120,16 @@ const Transactions = () => {
       title: 'Date',
       dataIndex: 'pickUpTime',
       key: 'pickUpTime',
+      width:'10%',
+
       render: (text) => new Date(text).toLocaleString(),
     },
    
     {
       title: 'Payment Method',
       dataIndex: 'paymentMethod',
+      width:'10%',
+
       key: 'paymentMethod',
       render: (text) => text || 'Cash',
 
@@ -126,6 +138,8 @@ const Transactions = () => {
     {
       title: 'Actions',
       key: 'actions',
+      width:'10%',
+
       render: (_, record) => (
         <>
           <Button type="link">

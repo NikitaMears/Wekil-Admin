@@ -89,12 +89,17 @@ const Vehicles = () => {
   };
 
   const vehiclesColumns = [
-    { title: 'Plate Number', dataIndex: 'plateNumber', key: 'plateNumber' },
-    { title: 'Model', dataIndex: 'model', key: 'model' },
-    { title: 'Color', dataIndex: 'color', key: 'color' },
-    { title: 'Driver', dataIndex: ['driver', 'firstName'], key: 'driver', render: (text, record) => record.driver ? `${record.driver.firstName} ${record.driver.lastName}` : 'N/A' },
+    { title: 'Plate Number', dataIndex: 'plateNumber', key: 'plateNumber',      width:'20%',
+  },
+    { title: 'Model', dataIndex: 'model', key: 'model',       width:'20%',
+  },
+    { title: 'Color', dataIndex: 'color', key: 'color',       width:'20%',
+  },
+    { title: 'Driver', dataIndex: ['driver', 'firstName'],       width:'20%',
+    key: 'driver', render: (text, record) => record.driver ? `${record.driver.firstName} ${record.driver.lastName}` : 'N/A' },
 
-    { title: 'Status', dataIndex: 'status', key: 'status' },
+    { title: 'Status', dataIndex: 'status', key: 'status',      width:'10%',
+  },
     {
       title: 'Actions',
       key: 'actions',
