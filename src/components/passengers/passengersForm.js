@@ -84,30 +84,7 @@ const DriversForm = ({ formData, setFormData, closeModal, refetchData }) => {
             <Input />
           </Form.Item>
         </Col>
-        <Col span={12}>
-          <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Please enter an email' }]}>
-            <Input />
-          </Form.Item>
-        </Col>
-      </Row>
-      <Row gutter={16}>
-        <Col span={12}>
-          <Form.Item label="Password" name="password" rules={[{ required: true, message: 'Please enter a password' }]}>
-            <Input />
-          </Form.Item>
-        </Col>
-        <Col span={12}>
-          <Form.Item label="Confirm Password" name="confPassword" rules={[{ required: true, message: 'Please confirm your password' }]}>
-            <Input />
-          </Form.Item>
-        </Col>
-      </Row>
-      <Row gutter={16}>
-        <Col span={12}>
-          <Form.Item label="Address" name="address">
-            <Input />
-          </Form.Item>
-        </Col>
+     
         <Col span={12}>
           <Form.Item label="Status" name="status">
             <Select>
@@ -118,29 +95,10 @@ const DriversForm = ({ formData, setFormData, closeModal, refetchData }) => {
           </Form.Item>
         </Col>
       </Row>
-      <Row gutter={16}>
-        <Col span={12}>
-          <Form.Item label="Rating" name="rating">
-            <Input />
-          </Form.Item>
-        </Col>
-      </Row>
-      <Row gutter={16}>
+    
+ 
    
-        <Col span={8}>
-          <Form.Item label="Passenger Image" name="passengerImage">
-            <Upload
-              beforeUpload={() => false}
-              fileList={imageFileList}
-              onChange={handleImageFileChange}
-              maxCount={1}
-            >
-              <Button icon={<UploadOutlined />}>Click to Upload</Button>
-            </Upload>
-          </Form.Item>
-        </Col>
-      
-      </Row>
+  
       <Form.Item>
         <Button type="primary" htmlType="submit">
           Save

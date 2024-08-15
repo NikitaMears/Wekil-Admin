@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Card, Upload, message, Descriptions, Button, Collapse, Spin, Table, Tabs, Avatar, Modal, Input } from "antd";
+import { Row, Col,Tag, Rate, Card, Upload, message, Descriptions, Button, Collapse, Spin, Tabs, Avatar, Modal, Input } from "antd";
 import { useParams } from "react-router-dom";
 import { ToTopOutlined, UserOutlined, SearchOutlined } from '@ant-design/icons';
 import axios from 'axios';
@@ -11,6 +11,8 @@ const { Search } = Input;
 function VehiclesDetail() {
   const [collapsed, setCollapsed] = useState(false);
   const [fileList, setFileList] = useState([]);
+  const [imageFileList, setImageFileList] = useState([]);
+  const [docFileList, setDocFileList] = useState([]);
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -18,7 +20,6 @@ function VehiclesDetail() {
   const [vehicleData, setVehicleData] = useState(null);
   const [driverData, setDriverData] = useState(null);
   const [vehicleTypeData, setVehicleTypeData] = useState(null);
-
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,10 +30,8 @@ function VehiclesDetail() {
     try {
       const vehicleResponse = await axios.get(`http://194.164.72.21:5001/vehicles/${id}`);
       setVehicleData(vehicleResponse.data.vehicle);
-
       setDriverData(vehicleResponse.data.driver);
-setVehicleTypeData(vehicleResponse.data.vehicleType)
-    
+      setVehicleTypeData(vehicleResponse.data.vehicleType);
       setLoading(false);
     } catch (error) {
       message.error("Unable to load vehicle details");
@@ -44,22 +43,38 @@ setVehicleTypeData(vehicleResponse.data.vehicleType)
     setCollapsed(!collapsed);
   };
 
-  const beforeUpload = (file) => {
-    setFileList([file]);
+  const beforeUpload = (file, type) => {
+    if (type === "image") {
+      setImageFileList([file]);
+    } else if (type === "document") {
+      setDocFileList([file]);
+    }
     return false;
   };
 
-  const handleUpload = async () => {
+  const handleUpload = async (type) => {
     const formData = new FormData();
-    formData.append("file", fileList[0]);
+    if (type === "image") {
+      formData.append("vehicleImage", imageFileList[0]);
+    } else if (type === "document") {
+      formData.append("documents", docFileList[0]);
+    }
 
     try {
-      await axios.post(`http://194.164.72.21:5001/uploadDriverDocument/${id}`, formData);
-      message.success("File uploaded successfully!");
-      setFileList([]);
+      await axios.post(`http://194.164.72.21:5001/vehicles/${id}`, formData);
+      message.success(`${type === "image" ? "Vehicle Image" : "Documents"} uploaded successfully!`);
+      if (type === "image") {
+        setImageFileList([]);
+      } else if (type === "document") {
+        setDocFileList([]);
+      }
     } catch (error) {
-      message.error("Failed to upload file");
-      setFileList([]);
+      message.error(`Failed to upload ${type === "image" ? "Vehicle Image" : "Documents"}`);
+      if (type === "image") {
+        setImageFileList([]);
+      } else if (type === "document") {
+        setDocFileList([]);
+      }
     }
   };
 
@@ -78,8 +93,6 @@ setVehicleTypeData(vehicleResponse.data.vehicleType)
       trip.passenger.lastName.toLowerCase().includes(lowerCaseQuery)
     );
   });
-
-
 
   const renderImage = (src, alt) => (
     src ? <img src={`http://194.164.72.21:5001${src}`} alt={alt} style={{ width: "100%", height: "400px", objectFit: "cover", marginBottom: "10px", cursor: 'pointer' }} onClick={() => handlePreview(`http://194.164.72.21:5001${src}`)} />
@@ -117,9 +130,6 @@ setVehicleTypeData(vehicleResponse.data.vehicleType)
                       <Descriptions.Item label="Manufactured Year" span={3}>
                         {vehicleData && vehicleData.manufacturedYear}
                       </Descriptions.Item>
-                      <Descriptions.Item label="Status" span={3}>
-                        {vehicleData && vehicleData.status}
-                      </Descriptions.Item>
                       <Descriptions.Item label="Vehicle Type" span={3}>
                         {vehicleTypeData && vehicleTypeData.typeName}
                       </Descriptions.Item>
@@ -136,25 +146,37 @@ setVehicleTypeData(vehicleResponse.data.vehicleType)
                   <Tabs defaultActiveKey="1">
                     <TabPane tab="Vehicle Image" key="1">
                       {renderImage(vehicleData?.vehicleImage, "Vehicle Image")}
+                      <div className="mt-4">
+                        <Upload
+                          beforeUpload={(file) => beforeUpload(file, "image")}
+                          fileList={imageFileList}
+                          maxCount={1}
+                          accept=".png, .jpg, .jpeg"
+                        >
+                          <Button type="dashed" className="ant-full-box" icon={<ToTopOutlined />} >
+                            Upload Vehicle Image
+                          </Button>
+                        </Upload>
+                        <Button onClick={() => handleUpload("image")} hidden={!imageFileList.length}>Submit</Button>
+                      </div>
                     </TabPane>
                     <TabPane tab="Documents" key="2">
                       {renderImage(vehicleData?.documents, "Vehicle Documents")}
+                      <div className="mt-4">
+                        <Upload
+                          beforeUpload={(file) => beforeUpload(file, "document")}
+                          fileList={docFileList}
+                          maxCount={1}
+                          accept=".png, .jpg, .jpeg, .docx,.pdf"
+                        >
+                          <Button type="dashed" className="ant-full-box" icon={<ToTopOutlined />} >
+                            Upload Documents
+                          </Button>
+                        </Upload>
+                        <Button onClick={() => handleUpload("document")} hidden={!docFileList.length}>Submit</Button>
+                      </div>
                     </TabPane>
-                  
                   </Tabs>
-                  <div className="mt-4">
-                    <Upload
-                      beforeUpload={beforeUpload}
-                      fileList={fileList}
-                      maxCount={1}
-                      accept=".docx,.pdf"
-                    >
-                      <Button type="dashed" className="ant-full-box" icon={<ToTopOutlined />} >
-                        Upload File
-                      </Button>
-                    </Upload>
-                    <Button onClick={handleUpload} hidden={!fileList.length}>Submit</Button>
-                  </div>
                 </Card>
               </Col>
             </Row>
@@ -179,18 +201,22 @@ setVehicleTypeData(vehicleResponse.data.vehicleType)
                       <Descriptions.Item label="Phone Number" span={3}>
                         {driverData && driverData.phoneNumber}
                       </Descriptions.Item>
-                      <Descriptions.Item label="Email" span={3}>
-                        {driverData && driverData.email}
-                      </Descriptions.Item>
+                    
                       <Descriptions.Item label="Status" span={3}>
-                        {driverData && driverData.status}
-                      </Descriptions.Item>
-                      <Descriptions.Item label="Address" span={3}>
-                        {driverData && driverData.address}
-                      </Descriptions.Item>
-                      <Descriptions.Item label="Rating" span={3}>
-                        {driverData && driverData.rating}
-                      </Descriptions.Item>
+    {driverData && (
+      <Tag color={
+        driverData.status === 'Active' ? 'darkgreen' :
+        driverData.status === 'Pending' ? 'darkorange' :
+        driverData.status === 'Inactive' ? 'darkred' : 'gray'
+      }>
+        {driverData.status.toUpperCase()}
+      </Tag>
+    )}
+  </Descriptions.Item>
+
+  <Descriptions.Item label="Rating" span={3}>
+    {driverData && <Rate disabled value={driverData.rating} />}
+  </Descriptions.Item>
                     </Descriptions>
                   </Card>
                 </div>
@@ -212,7 +238,7 @@ setVehicleTypeData(vehicleResponse.data.vehicleType)
                       {renderImage(driverData?.driverLicence, "Driver Licence")}
                     </TabPane>
                   </Tabs>
-                  <div className="mt-4">
+                  {/* <div className="mt-4">
                     <Upload
                       beforeUpload={beforeUpload}
                       fileList={fileList}
@@ -224,7 +250,7 @@ setVehicleTypeData(vehicleResponse.data.vehicleType)
                       </Button>
                     </Upload>
                     <Button onClick={handleUpload} hidden={!fileList.length}>Submit</Button>
-                  </div>
+                  </div> */}
                 </Card>
               </Col>
             </Row>

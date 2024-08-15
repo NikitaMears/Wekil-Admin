@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, message, Input, Button, Table, Spin } from 'antd';
+import { Card, Row, Col, message, Input, Button, Table, Spin, Tag, Rate, Tooltip } from 'antd';
 import { SearchOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { NavLink } from "react-router-dom";
 import axios from 'axios';
@@ -83,78 +83,100 @@ const Trips = () => {
     setFilteredData(filteredData);
   };
 
+  const renderWithTooltip = (text, maxLength = 10) => {
+    const truncatedText = text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    return (
+      <Tooltip title={text}>
+        <span>{truncatedText}</span>
+      </Tooltip>
+    );
+  };
+
   const tripsColumns = [
     {
       title: 'Trip ID',
       dataIndex: 'id',
       key: 'id',
-      width:'10%'
+      width: '10%'
     },
     {
       title: 'Driver Name',
       dataIndex: ['driver', 'firstName'],
       key: 'driverName',
-      width:'10%',
-
-      render: (text, record) => `${record.driver.firstName} ${record.driver.lastName}`,
+      width: '10%',
+      render: (text, record) => renderWithTooltip(`${record.driver.firstName} ${record.driver.lastName}`, 15),
     },
     {
       title: 'Passenger Name',
-      dataIndex: ['passenger', 'passengerName'],
-      key: 'driverName',
-      width:'10%',
-
-      render: (text, record) => `${record.passenger.firstName} ${record.passenger.lastName}`,
+      dataIndex: ['passenger', 'firstName'],
+      key: 'passengerName',
+      width: '10%',
+      render: (text, record) => renderWithTooltip(`${record.passenger.firstName} ${record.passenger.lastName}`, 15),
     },
     {
       title: 'Start Location',
       dataIndex: 'from',
       key: 'from',
-      width:'10%',
-
+      width: '10%',
+      render: text => renderWithTooltip(text, 20),
     },
     {
       title: 'End Location',
       dataIndex: 'to',
       key: 'to',
-      width:'10%',
+      width: '10%',
+      render: text => renderWithTooltip(text, 20),
     },
     {
       title: 'Date',
       dataIndex: 'pickUpTime',
       key: 'pickUpTime',
-      width:'10%',
-
-      render: (text) => new Date(text).toLocaleString(),
+      width: '10%',
+      render: text => renderWithTooltip(new Date(text).toLocaleString(), 20),
     },
-   
     {
       title: 'Status',
-      width:'10%',
-
       dataIndex: 'status',
       key: 'status',
+      width: '10%',
+      render: status => {
+        let color = '';
+        switch (status) {
+          case 'Ended':
+            color = 'darkgreen';
+            break;
+          case 'Active':
+            color = 'darkorange';
+            break;
+          case 'inactive':
+            color = 'darkred';
+            break;
+          default:
+            color = 'gray';
+        }
+        return (
+          <Tooltip title={status.toUpperCase()}>
+            <Tag color={color}>{renderWithTooltip(status.toUpperCase(), 7)}</Tag>
+          </Tooltip>
+        );
+      },
     },
 
     {
       title: 'Actions',
-      width:'10%',
-
       key: 'actions',
+      width: '10%',
       render: (_, record) => (
-        <>
-          <Button type="link">
-            <NavLink to={`/tripDetails/${record.id}`} style={{ color: 'green' }}>
-              <InfoCircleOutlined /> &nbsp;Details
-            </NavLink>
-          </Button>
-        </>
+        <Button type="link">
+          <NavLink to={`/tripDetails/${record.id}`} style={{ color: 'green' }}>
+            <InfoCircleOutlined /> &nbsp;Details
+          </NavLink>
+        </Button>
       ),
     },
   ];
 
   const DynamicTable = ({ columns: initialColumns, data }) => {
-    // Initialize displayed columns with all available columns
     const defaultDisplayedColumns = initialColumns.map(column => column.key);
     const [displayedColumns, setDisplayedColumns] = useState(defaultDisplayedColumns);
 
@@ -171,7 +193,6 @@ const Trips = () => {
           dataSource={data}
           pagination={{ pageSize: 5 }}
           className="ant-border-space"
-          // scroll={{ x: 2000, y: 400 }}
         />
       </div>
     );

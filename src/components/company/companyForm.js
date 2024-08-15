@@ -131,7 +131,7 @@ const CompanyForm = ({ formData, setFormData, closeModal, refetchData }) => {
       </Row>
       <Row gutter={16}>
         <Col span={8}>
-          <Form.Item label="Documents" name="documents">
+          <Form.Item label="Documents" rules={[{ required: false, message: 'Please enter a phone number' }]} name="documents">
             <Upload
               beforeUpload={() => false}
               fileList={fileList}
@@ -143,7 +143,7 @@ const CompanyForm = ({ formData, setFormData, closeModal, refetchData }) => {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="Company Image" name="companyImage">
+          <Form.Item label="Company Image" rules={[{ required: false, message: 'Please enter a phone number' }]} name="companyImage">
             <Upload
               beforeUpload={() => false}
               fileList={imageFileList}
@@ -155,7 +155,7 @@ const CompanyForm = ({ formData, setFormData, closeModal, refetchData }) => {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="Company Licence" name="companyLicence">
+          <Form.Item label="Company Licence" rules={[{ required: false, message: 'Please enter a phone number' }]} name="companyLicence">
             <Upload
               beforeUpload={() => false}
               fileList={licenceFileList}

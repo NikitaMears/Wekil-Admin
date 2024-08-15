@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, message, Input, Tabs, Button, Table, Modal, Upload, Checkbox, Dropdown, Tooltip, Spin } from 'antd';
+import { Card, Row, Col,Rate,Tag, message, Input, Tabs, Button, Table, Modal, Upload, Checkbox, Dropdown, Tooltip, Spin } from 'antd';
 import { PlusOutlined, SearchOutlined, EditOutlined, DeleteOutlined, InfoCircleOutlined, ToTopOutlined, DownOutlined } from '@ant-design/icons';
 import DriversForm from './driversForm'; // Import the DriversForm component
 import useFetchWithToken from '../../services/api';
@@ -95,8 +95,36 @@ const Drivers = () => {
     { title: 'Last Name', dataIndex: 'lastName', key: 'lastName' , width: '20%'},
     { title: 'Phone Number', dataIndex: 'phoneNumber', key: 'phoneNumber', width: '20%' },
     // { title: 'Email', dataIndex: 'email', key: 'email' , width: '10%'},
-    { title: 'Status', dataIndex: 'status', key: 'status' , width: '20%'},
     {
+      title: 'Rating',
+      dataIndex: 'rating',
+      key: 'rating',
+      width: '20%',
+      render: (rating) => <Rate disabled value={rating} />,
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      width: '20%',
+      render: (status) => {
+        let color = '';
+        switch (status) {
+          case 'Active':
+            color = 'darkgreen';
+            break;
+          case 'Pending':
+            color = 'darkorange';
+            break;
+          case 'Inactive':
+            color = 'darkred';
+            break;
+          default:
+            color = 'gray'; // Fallback color if status doesn't match any case
+        }
+        return <Tag color={color}>{status.toUpperCase()}</Tag>;
+      },
+    },    {
       title: 'Actions',
        width: '20%',
       key: 'actions',
@@ -135,7 +163,7 @@ const Drivers = () => {
 
     return (
       <>
-        <Dropdown
+        {/* <Dropdown
           overlay={
             <ColumnSelector
               columns={initialColumns.map((column) => ({
@@ -151,7 +179,7 @@ const Drivers = () => {
           <Button>
             Select Columns <DownOutlined />
           </Button>
-        </Dropdown>
+        </Dropdown> */}
         <div style={{ overflowX: 'auto' }}>
           <Table
             columns={filteredColumns}
@@ -170,11 +198,11 @@ const Drivers = () => {
     <div>
       <Card>
         <Row gutter={[24, 0]}>
-        <Col span={12} style={{ textAlign: 'left' }}>
+        {/* <Col span={12} style={{ textAlign: 'left' }}>
             <Button type="primary" icon={<PlusOutlined />} onClick={handleAddDriver}>
               Add Driver
             </Button>
-          </Col>
+          </Col> */}
           <Col span={12}>
             <Search
               placeholder="Search Drivers"

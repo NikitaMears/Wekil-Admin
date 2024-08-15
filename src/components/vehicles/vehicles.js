@@ -130,7 +130,7 @@ const Vehicles = () => {
 
     return (
       <>
-        <Dropdown
+        {/* <Dropdown
           overlay={
             <ColumnSelector
               columns={initialColumns.map((column) => ({
@@ -146,7 +146,7 @@ const Vehicles = () => {
           <Button>
             Select Columns <DownOutlined />
           </Button>
-        </Dropdown>
+        </Dropdown> */}
         <div style={{ overflowX: 'auto' }}>
           <Table
             columns={filteredColumns}
@@ -189,7 +189,7 @@ const Vehicles = () => {
               </div>
             ) : (
               <DynamicTable onRow={(record) => ({
-                onClick: () => handleRowClick(record),
+                // onClick: () => handleRowClick(record),
               })} columns={vehiclesColumns} data={filteredData} />
             )}
           </Col>

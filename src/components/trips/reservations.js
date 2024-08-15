@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, message, Input, Button, Table, Spin } from 'antd';
+import { Card, Row, Col, message, Input, Button, Table, Spin,Tag, Tooltip } from 'antd';
 import { SearchOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { NavLink } from "react-router-dom";
 import axios from 'axios';
@@ -78,77 +78,112 @@ const Reservations = () => {
     setFilteredData(filteredData);
   };
 
+  const renderWithTooltip = (text, maxLength = 20) => {
+    const truncatedText = text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    return (
+      <Tooltip title={text}>
+        <span style={{
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          display: 'inline-block',
+          maxWidth: '100%',
+        }}>
+          {truncatedText}
+        </span>
+      </Tooltip>
+    );
+  };
+  
+
   const tripsColumns = [
     {
       title: 'Trip ID',
       dataIndex: 'id',
       key: 'id',
-      width:'10%',
-
+      width: '5%',
+      render: text => renderWithTooltip(text, 10), // Limit to 10 characters
     },
     {
       title: 'Driver Name',
       dataIndex: ['driver', 'firstName'],
       key: 'driverName',
-      width:'10%',
-
-      render: (text, record) => record.driver ? `${record.driver.firstName} ${record.driver.lastName}` : 'N/A',
+      width: '10%',
+      render: (text, record) => renderWithTooltip(record.driver ? `${record.driver.firstName} ${record.driver.lastName}` : 'N/A', 10), // Limit to 15 characters
     },
     {
       title: 'Passenger Name',
       dataIndex: 'passengerId',
       key: 'passengerId',
-      width:'10%',
-
-      render: (text, record) => record.passenger ? `${record.passenger.firstName} ${record.passenger.lastName}` : 'N/A',
+      width: '10%',
+      render: (text, record) => renderWithTooltip(record.passenger ? `${record.passenger.firstName} ${record.passenger.lastName}` : 'N/A', 10), // Limit to 15 characters
     },
     {
       title: 'Start Location',
       dataIndex: 'from',
       key: 'from',
-      width:'10%',
-
+      width: '10%',
+      render: text => renderWithTooltip(text, 10), // Limit to 20 characters
     },
     {
       title: 'End Location',
       dataIndex: 'to',
       key: 'to',
-      width:'10%',
+      width: '10%',
+      render: text => renderWithTooltip(text, 10), // Limit to 20 characters
     },
     {
       title: 'Date',
       dataIndex: 'pickUpDate',
       key: 'pickUpDate',
-      width:'10%',
-
-      render: (text) => text ? new Date(text).toLocaleString() : 'N/A',
+      width: '10%',
+      render: text => renderWithTooltip(text ? new Date(text).toLocaleString() : 'N/A', 15), // Limit to 19 characters
     },
     {
       title: 'Distance',
       dataIndex: 'distance',
       key: 'distance',
-      width:'10%',
-
+      width: '10%',
+      render: text => renderWithTooltip(text, 10), // Limit to 10 characters
     },
     {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
-      width:'10%',
-
+      width: '10%',
+      render: text => renderWithTooltip(text, 10), // Limit to 10 characters
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      width:'10%',
-
+      width: '10%',
+      render: status => {
+        let color = '';
+        switch (status) {
+          case 'Ended':
+            color = 'darkgreen';
+            break;
+          case 'Accepted':
+            color = 'darkorange';
+            break;
+          case 'Pending':
+            color = 'darkred';
+            break;
+          default:
+            color = 'gray';
+        }
+        return (
+          <Tooltip title={status.toUpperCase()}>
+            <Tag color={color}>{renderWithTooltip(status.toUpperCase(), 10)}</Tag>
+          </Tooltip>
+        );
+      },
     },
     {
       title: 'Actions',
       key: 'actions',
-      width:'10%',
-
+      width: '10%',
       render: (_, record) => (
         <Button type="link">
           <NavLink to={`/reservationDetails/${record.id}`} style={{ color: 'green' }}>
@@ -158,6 +193,7 @@ const Reservations = () => {
       ),
     },
   ];
+  
 
   const DynamicTable = ({ columns: initialColumns, data }) => {
     const defaultDisplayedColumns = initialColumns.map(column => column.key);
@@ -176,7 +212,7 @@ const Reservations = () => {
           dataSource={data}
           pagination={{ pageSize: 5 }}
           className="ant-border-space"
-          scroll={{ x: 2000, y: 400 }}
+          // scroll={{ x: 2000, y: 400 }}
         />
       </div>
     );

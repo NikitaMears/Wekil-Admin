@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Card, Upload, message, Descriptions, Button, Collapse, Spin, Table, Tabs, Avatar, Modal, Input } from "antd";
+import { Row, Col, Tooltip, Card,Tag, Rate, Upload, message, Descriptions, Button, Collapse, Spin, Table, Tabs, Avatar, Modal, Input } from "antd";
 import { useParams } from "react-router-dom";
-import { ToTopOutlined, UserOutlined, SearchOutlined } from '@ant-design/icons';
+import { ToTopOutlined, UserOutlined,InfoCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import useFetchWithToken from '../../services/api'; // Import the useFetchWithToken hook
+import { NavLink } from "react-router-dom";
 
 const { Panel } = Collapse;
 const { TabPane } = Tabs;
@@ -14,7 +15,6 @@ function DriversDetail() {
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState("1");
   const { id } = useParams();
   const { data: driverData, loading: driverLoading, postFormData, putFormData } = useFetchWithToken(`drivers/${id}`); // Fetch driver details using useFetchWithToken hook
   const { data: tripData, loading: tripsLoading } = useFetchWithToken(`trips/driver/${id}`); // Fetch driver trips using useFetchWithToken hook
@@ -30,17 +30,21 @@ function DriversDetail() {
     return false; // Returning false prevents default upload behavior
   };
 
-  const handleUpload = async () => {
+  const handleUpload = async (fieldName) => {
+    if (!fileList.length) {
+      message.warning("Please select a file to upload.");
+      return;
+    }
+
     const formData = new FormData();
-    const fieldName = activeTab === "1" ? "driverImage" : activeTab === "2" ? "documents" : "driverLicence";
     formData.append(fieldName, fileList[0]);
 
     try {
-      await putFormData(formData, `drivers/updateDocuments/${id}`); // Upload driver document using postFormData function from useFetchWithToken hook
-      message.success("File uploaded successfully!");
+      await putFormData(formData, `drivers/updateDocuments/${id}`);
+      message.success(`${fieldName} uploaded successfully!`);
       setFileList([]);
     } catch (error) {
-      message.error("Failed to upload file");
+      message.error(`Failed to upload ${fieldName}`);
       setFileList([]);
     }
   };
@@ -60,57 +64,110 @@ function DriversDetail() {
       trip.passenger.lastName.toLowerCase().includes(lowerCaseQuery)
     );
   });
-
-  const tripColumns = [
+  const renderWithTooltip = (text, maxLength = 20) => {
+    const truncatedText = text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    return (
+      <Tooltip title={text}>
+        <span style={{
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          display: 'inline-block',
+          maxWidth: '100%',
+        }}>
+          {truncatedText}
+        </span>
+      </Tooltip>
+    );
+  };
+  const tripsColumns = [
     {
       title: 'Trip ID',
       dataIndex: 'id',
       key: 'id',
+      width: '5%',
+      render: text => renderWithTooltip(text, 10), // Limit to 10 characters
+    },
+  
+    {
+      title: 'Passenger Name',
+      dataIndex: 'passengerId',
+      key: 'passengerId',
+      width: '10%',
+      render: (text, record) => renderWithTooltip(record.passenger ? `${record.passenger.firstName} ${record.passenger.lastName}` : 'N/A', 15), // Limit to 15 characters
     },
     {
       title: 'Start Location',
       dataIndex: 'from',
       key: 'from',
+      width: '10%',
+      render: text => renderWithTooltip(text, 15), // Limit to 20 characters
     },
     {
       title: 'End Location',
       dataIndex: 'to',
       key: 'to',
+      width: '10%',
+      render: text => renderWithTooltip(text, 15), // Limit to 20 characters
     },
     {
       title: 'Date',
       dataIndex: 'pickUpTime',
       key: 'pickUpTime',
-      render: (text) => new Date(text).toLocaleString(),
+      width: '10%',
+      render: text => renderWithTooltip(text ? text : 'N/A', 10), // Limit to 19 characters
     },
     {
       title: 'Distance',
       dataIndex: 'distance',
       key: 'distance',
+      width: '10%',
+      render: text => renderWithTooltip(text, 10), // Limit to 10 characters
     },
     {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
+      width: '10%',
+      render: text => renderWithTooltip(text, 10), // Limit to 10 characters
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      width: '20%',
+      render: (status) => {
+        let color = '';
+        switch (status) {
+          case 'Completed':
+            color = 'darkgreen';
+            break;
+          case 'Active':
+            color = 'darkorange';
+            break;
+          case 'Inactive':
+            color = 'darkred';
+            break;
+          default:
+            color = 'gray'; // Fallback color if status doesn't match any case
+        }
+        return <Tag color={color}>{status.toUpperCase()}</Tag>;
+      },
     },
     {
-      title: 'Passenger Name',
-      dataIndex: ['passenger', 'firstName'],
-      key: 'passengerName',
-      render: (text, record) => `${record.passenger.firstName} ${record.passenger.lastName}`,
+      title: 'Actions',
+      key: 'actions',
+      width: '10%',
+      render: (_, record) => (
+        <Button type="link">
+          <NavLink to={`/tripDetails/${record.id}`} style={{ color: 'green' }}>
+            <InfoCircleOutlined /> &nbsp;Details
+          </NavLink>
+        </Button>
+      ),
     },
-    {
-      title: 'Passenger Phone',
-      dataIndex: ['passenger', 'phoneNumber'],
-      key: 'passengerPhone',
-    },
-    // Add other trip details as needed
   ];
+  
 
   const renderImage = (src, alt) => (
     src ? <img src={`http://194.164.72.21:5001${src}`} alt={alt} style={{ width: "100%", height: "400px", objectFit: "cover", marginBottom: "10px", cursor: 'pointer' }} onClick={() => handlePreview(`http://194.164.72.21:5001${src}`)} />
@@ -124,7 +181,7 @@ function DriversDetail() {
           <Spin size="large" />
         </div>
       ) : (
-        <Tabs defaultActiveKey="1" onChange={setActiveTab}>
+        <Tabs defaultActiveKey="1">
           <TabPane tab="Driver Details" key="1">
             <Row gutter={[24, 0]}>
               <Col span={24} md={12} className="mb-24">
@@ -145,18 +202,24 @@ function DriversDetail() {
                       <Descriptions.Item label="Phone Number" span={3}>
                         {driver && driver.phoneNumber}
                       </Descriptions.Item>
-                      {/* <Descriptions.Item label="Email" span={3}>
-                        {driver && driver.email}
-                      </Descriptions.Item> */}
                       <Descriptions.Item label="Status" span={3}>
-                        {driver && driver.status}
-                      </Descriptions.Item>
-                      {/* <Descriptions.Item label="Address" span={3}>
-                        {driver && driver.address}
-                      </Descriptions.Item> */}
-                      <Descriptions.Item label="Rating" span={3}>
-                        {driver && driver.rating}
-                      </Descriptions.Item>
+    {driver && (
+      <Tag color={
+        driver.status === 'Active' ? 'darkgreen' :
+        driver.status === 'Pending' ? 'darkorange' :
+        driver.status === 'Inactive' ? 'darkred' : 'gray'
+      }>
+        {driver.status.toUpperCase()}
+      </Tag>
+    )}
+  </Descriptions.Item>
+
+  <Descriptions.Item label="Rating" span={3}>
+    {driver && <Rate disabled value={driver.rating} />}
+  </Descriptions.Item>
+  
+
+  
                     </Descriptions>
                   </Card>
                 </div>
@@ -170,31 +233,56 @@ function DriversDetail() {
                   <Tabs defaultActiveKey="1">
                     <TabPane tab="Driver Image" key="1">
                       {renderImage(driver?.driverImage, "Driver Image")}
+                      <div className="mt-4">
+                        <Upload
+                          beforeUpload={beforeUpload}
+                          fileList={fileList}
+                          maxCount={1}
+                          accept=".docx,.pdf, .png, .jpg, .jpeg"
+                        >
+                          <Button type="dashed" className="ant-full-box" icon={<ToTopOutlined />} >
+                            Upload Driver Image
+                          </Button>
+                        </Upload>
+                        <Button onClick={() => handleUpload("driverImage")} hidden={!fileList.length}>Submit</Button>
+                      </div>
                     </TabPane>
                     <TabPane tab="Documents" key="2">
                       {renderImage(driver?.documents, "Driver Documents")}
+                      <div className="mt-4">
+                        <Upload
+                          beforeUpload={beforeUpload}
+                          fileList={fileList}
+                          maxCount={1}
+                          accept=".docx,.pdf, .png, .jpg, .jpeg"
+                        >
+                          <Button type="dashed" className="ant-full-box" icon={<ToTopOutlined />} >
+                            Upload Documents
+                          </Button>
+                        </Upload>
+                        <Button onClick={() => handleUpload("documents")} hidden={!fileList.length}>Submit</Button>
+                      </div>
                     </TabPane>
                     <TabPane tab="Driver Licence" key="3">
                       {renderImage(driver?.driverLicence, "Driver Licence")}
+                      <div className="mt-4">
+                        <Upload
+                          beforeUpload={beforeUpload}
+                          fileList={fileList}
+                          maxCount={1}
+                          accept=".docx,.pdf, .png, .jpg, .jpeg"
+                        >
+                          <Button type="dashed" className="ant-full-box" icon={<ToTopOutlined />} >
+                            Upload Driver Licence
+                          </Button>
+                        </Upload>
+                        <Button onClick={() => handleUpload("driverLicence")} hidden={!fileList.length}>Submit</Button>
+                      </div>
                     </TabPane>
                   </Tabs>
-                  <div className="mt-4">
-                    <Upload
-                      beforeUpload={beforeUpload}
-                      fileList={fileList}
-                      maxCount={1}
-                      accept=".docx,.pdf, .png, .jpg, .jpeg"
-                    >
-                      <Button type="dashed" className="ant-full-box" icon={<ToTopOutlined />} >
-                        Upload File
-                      </Button>
-                    </Upload>
-                    <Button onClick={handleUpload} hidden={!fileList.length}>Submit</Button>
-                  </div>
                 </Card>
               </Col>
             </Row>
-            {/* Content */}
           </TabPane>
           <TabPane tab="Trips" key="2">
             <Row gutter={[24, 0]}>
@@ -212,7 +300,7 @@ function DriversDetail() {
                     onChange={e => setSearchQuery(e.target.value)}
                     style={{ marginBottom: 16 }}
                   />
-                  <Table columns={tripColumns} dataSource={filteredTrips} rowKey="id" />
+                  <Table columns={tripsColumns} dataSource={filteredTrips} rowKey="id" />
                 </Card>
               </Col>
             </Row>

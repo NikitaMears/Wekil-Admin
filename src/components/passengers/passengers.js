@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, message, Input, Tabs, Button, Table, Modal, Upload, Checkbox, Dropdown, Tooltip, Spin } from 'antd';
+import { Card, Row, Tooltip, Tag, Col, message, Input, Tabs, Button, Table, Modal, Upload, Checkbox, Dropdown, Spin } from 'antd';
 import { PlusOutlined, SearchOutlined, EditOutlined, DeleteOutlined, InfoCircleOutlined, ToTopOutlined, DownOutlined } from '@ant-design/icons';
 import PassengersForm from './passengersForm'; // Import the PassengersForm component
 import useFetchWithToken from '../../services/api';
@@ -66,6 +66,22 @@ const Passengers = () => {
       setUploading(false)
     }
   };
+  const renderWithTooltip = (text, maxLength = 20) => {
+    const truncatedText = text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    return (
+      <Tooltip title={text}>
+        <span style={{
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          display: 'inline-block',
+          maxWidth: '100%',
+        }}>
+          {truncatedText}
+        </span>
+      </Tooltip>
+    );
+  };
 
   const fetchData = async () => {
     try {
@@ -94,8 +110,33 @@ const Passengers = () => {
     { title: 'First Name', dataIndex: 'firstName', key: 'firstName' , width: '20%'},
     { title: 'Last Name', dataIndex: 'lastName', key: 'lastName' , width: '20%'},
     { title: 'Phone Number', dataIndex: 'phoneNumber', key: 'phoneNumber', width: '20%' },
-    { title: 'Status', dataIndex: 'status', key: 'status' , width: '20%'},
     {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      width: '10%',
+      render: status => {
+        let color = '';
+        switch (status) {
+          case 'Active':
+            color = 'darkgreen';
+            break;
+          case 'Pending':
+            color = 'darkorange';
+            break;
+          case 'Inactive':
+            color = 'darkred';
+            break;
+          default:
+            color = 'gray';
+        }
+        return (
+          <Tooltip title={status.toUpperCase()}>
+            <Tag color={color}>{renderWithTooltip(status.toUpperCase(), 10)}</Tag>
+          </Tooltip>
+        );
+      },
+    },    {
       title: 'Actions',
       width: '20%',
       key: 'actions',
@@ -133,7 +174,7 @@ const Passengers = () => {
 
     return (
       <>
-        <Dropdown
+        {/* <Dropdown
           overlay={
             <ColumnSelector
               columns={initialColumns.map((column) => ({
@@ -149,7 +190,7 @@ const Passengers = () => {
           <Button>
             Select Columns <DownOutlined />
           </Button>
-        </Dropdown>
+        </Dropdown> */}
         <div style={{ overflowX: 'auto' }}>
           <Table
             columns={filteredColumns}
@@ -169,9 +210,9 @@ const Passengers = () => {
       <Card>
         <Row gutter={[24, 0]}>
         <Col span={12} style={{ textAlign: 'left' }}>
-            <Button type="primary" icon={<PlusOutlined />} onClick={handleAddPassenger}>
+            {/* <Button type="primary" icon={<PlusOutlined />} onClick={handleAddPassenger}>
               Add Passenger
-            </Button>
+            </Button> */}
           </Col>
           <Col span={12}>
             <Search

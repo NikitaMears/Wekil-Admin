@@ -16,11 +16,10 @@ const ActiveDrivers = () => {
   const [formData, setFormData] = useState({});
   const [uploading, setUploading] = useState(false);
   const [selectedColumns, setSelectedColumns] = useState([]); // Add state for selected columns
-  const defaultSelectedColumns = ['firstName', 'lastName', 'phoneNumber', 'email', 'status', 'actions']; // Default selected columns
+  const defaultSelectedColumns = ['driverId', 'vehicleTypeId', 'socketId', 'currentLat', 'currentLon', 'queueNumber', 'status', 'actions']; // Default selected columns
   const [driversData, setDriversData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedRowDetails, setSelectedRowDetails] = useState(null); // State to hold selected row details
   const [selectedRow, setSelectedRow] = useState(null);
   const [detailsVisible, setDetailsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -52,10 +51,12 @@ const ActiveDrivers = () => {
     try {
       setLoading(true);
       const response = await axios.get("http://194.164.72.21:5001/drivers/active");
-      const driversWithDetails = await Promise.all(response.data.map(async driver => {
+
+      const driversWithDetails = await Promise.all(response.data.activeDrivers.map(async driver => {
         const driverDetails = await fetchDriverDetails(driver.driverId);
-        return { ...driver, ...driverDetails };
+        return { ...driver, ...driverDetails, key: driver.id }; // 'key' is necessary for table rows
       }));
+
       setDriversData(driversWithDetails);
       setFilteredData(driversWithDetails);
       setLoading(false);
@@ -87,12 +88,12 @@ const ActiveDrivers = () => {
 
       // Handle successful upload
       message.success(`${file.name} uploaded successfully`);
-      setUploading(false)
+      setUploading(false);
     } catch (error) {
       // Handle upload error
-      console.log(error)
+      console.log(error);
       message.error(`${file.name} upload failed.`);
-      setUploading(false)
+      setUploading(false);
     }
   };
 
@@ -107,11 +108,16 @@ const ActiveDrivers = () => {
   };
 
   const driversColumns = [
+    { title: 'Driver ID', dataIndex: 'driverId', key: 'driverId' },
     { title: 'First Name', dataIndex: 'firstName', key: 'firstName' },
     { title: 'Last Name', dataIndex: 'lastName', key: 'lastName' },
-    { title: 'Phone Number', dataIndex: 'phoneNumber', key: 'phoneNumber' },
+
+
+    // { title: 'Vehicle Type ID', dataIndex: 'vehicleTypeId', key: 'vehicleTypeId' },
+    // { title: 'Socket ID', dataIndex: 'socketId', key: 'socketId' },
     { title: 'Lattitude', dataIndex: 'currentLat', key: 'currentLat' },
     { title: 'Longitude', dataIndex: 'currentLon', key: 'currentLon' },
+    { title: 'Queue Number', dataIndex: 'queueNumber', key: 'queueNumber' },
     { title: 'Status', dataIndex: 'status', key: 'status' },
     {
       title: 'Actions',
@@ -139,7 +145,7 @@ const ActiveDrivers = () => {
   );
 
   const DynamicTable = ({ columns: initialColumns, data, onRow }) => {
-    const defaultDisplayedColumns = initialColumns.map(column => column.key).slice(0, 7); // Select first two columns by default
+    const defaultDisplayedColumns = initialColumns.map(column => column.key); // Select all columns by default
     const [displayedColumns, setDisplayedColumns] = useState(defaultDisplayedColumns);
 
     const handleColumnChange = (selectedColumns) => {
@@ -184,7 +190,6 @@ const ActiveDrivers = () => {
   return (
     <div>
       <Card>
- 
         <Row gutter={[16, 16]}>
           <Col xs={24} xl={selectedRow ? 12 : 24}>
             {loading ? (
@@ -192,9 +197,14 @@ const ActiveDrivers = () => {
                 <Spin size="large" />
               </div>
             ) : (
-              <DynamicTable onRow={(record) => ({
-                // onClick: () => handleRowClick(record),
-              })} columns={driversColumns} data={filteredData} pagination={{ pageSize: 5 }} />
+              <DynamicTable
+                onRow={(record) => ({
+                  // onClick: () => handleRowClick(record),
+                })}
+                columns={driversColumns}
+                data={filteredData}
+                pagination={{ pageSize: 5 }}
+              />
             )}
           </Col>
           <Col xs={24} xl={12}>
@@ -203,13 +213,13 @@ const ActiveDrivers = () => {
                 <Tabs defaultActiveKey="1">
                   <TabPane tab="Details" key="1">
                     <Card
-                      title={`Details of ${selectedRow.firstName} ${selectedRow.lastName}`}
+                      title={`Details of Driver ID ${selectedRow.driverId}`}
                       style={{ height: "500px", overflow: "auto" }}
                       headStyle={{ position: 'sticky', top: '0', zIndex: '1', background: '#fff' }}
                       extra={
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                           <Button type="link" onClick={handleCloseDetails} style={{ color: 'red' }}>Close</Button>
-                          <Button type="link" onClick={() => history.push(`/driverDetails/${selectedRow.id}`)} style={{ color: 'green' }}>Details</Button>
+                          <Button type="link" onClick={() => history.push(`/driverDetails/${selectedRow.driverId}`)} style={{ color: 'green' }}>Details</Button>
                         </div>
                       }
                     >
@@ -245,7 +255,7 @@ const ActiveDrivers = () => {
           </Col>
         </Row>
       </Card>
-  
+
       <Modal
         title={formData.id ? 'Edit Driver' : 'Add Driver'}
         visible={irModalVisible}

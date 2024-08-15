@@ -85,14 +85,10 @@ function App() {
           <Route exact path="/reservations" component={Reservations} />
           <Route exact path="/vehicleTypes" component={VehicleTypes} />
           <Route exact path="/initialPrices" component={InitialPrices} />
-          <Route exact path="/searchRadius" component={SearchRadiuses} />
+          <Route exact path="/searchRadiuses" component={SearchRadiuses} />
           <Route exact path="/transactions" component={Transactions} />
           <Route exact path="/companyDetails/:id" component={CompanyDetails} />
           <Route exact path="/dispatch" component={Dispatch} />
-
-
-
-
 
 
 

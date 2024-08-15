@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Card, Upload, message, Descriptions, Button, Tabs, Avatar, Modal, Spin } from "antd";
+import { Row, Col,Rate,Tag, Card, Upload, message, Descriptions, Button, Tabs, Avatar, Modal, Spin } from "antd";
 import { useParams } from "react-router-dom";
 import { ToTopOutlined, UserOutlined } from '@ant-design/icons';
 import { GoogleMap, LoadScript, Marker, DirectionsRenderer } from '@react-google-maps/api';
@@ -89,14 +89,13 @@ const TripDetail = () => {
               <Col span={24} className="mb-24">
                 <Card
                   bordered={false}
-                  title={<h6 className="font-semibold m-0">Trip Details</h6>}
+                  title={<h6 className="font-semibold m-0">Trip Details-                       {tripData?.id}
+                  </h6>}
                   className="header-solid h-full card-profile-information"
                   bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
                 >
                   <Descriptions style={{ marginTop: '60px' }} column={2}>
-                    <Descriptions.Item label="Trip ID" span={1}>
-                      {tripData?.id}
-                    </Descriptions.Item>
+                  
                     <Descriptions.Item label="Start Location" span={1}>
                       {tripData?.from}
                     </Descriptions.Item>
@@ -109,23 +108,32 @@ const TripDetail = () => {
                     <Descriptions.Item label="Price" span={1}>
                       ${tripData?.price}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Status" span={1}>
-                      {tripData?.status}
-                    </Descriptions.Item>
+                   
+                    <Descriptions.Item label="Status" span={3}>
+    {tripData && (
+      <Tag color={
+        tripData.status === 'Ended' ? 'darkgreen' :
+        tripData.status === 'Active' ? 'darkorange' :
+        tripData.status === 'Cancelled' ? 'darkred' : 'gray'
+      }>
+        {tripData.status.toUpperCase()}
+      </Tag>
+    )}
+  </Descriptions.Item>
                     <Descriptions.Item label="Pick Up Time" span={1}>
                       {new Date(tripData?.pickUpTime).toLocaleString()}
                     </Descriptions.Item>
                     <Descriptions.Item label="Drop Off Time" span={1}>
                       {new Date(tripData?.dropOffTime).toLocaleString()}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Payment Finalized" span={1}>
+                    {/* <Descriptions.Item label="Payment Finalized" span={1}>
                       {tripData?.paymentFinalized}
-                    </Descriptions.Item>
+                    </Descriptions.Item> */}
                     <Descriptions.Item label="Driver Rating" span={1}>
-                      {tripData?.driverRating}
+                    {tripData && <Rate disabled value={tripData.driverRating} />}
                     </Descriptions.Item>
                     <Descriptions.Item label="Passenger Rating" span={1}>
-                      {tripData?.PassengerRating}
+                    {tripData && <Rate disabled value={tripData.passengerRatinf} />}
                     </Descriptions.Item>
                     <Descriptions.Item label="Driver Feedback" span={1}>
                       {tripData?.driverFeedback}
@@ -136,7 +144,7 @@ const TripDetail = () => {
                   </Descriptions>
                 </Card>
               </Col>
-              <Col span={24}>
+              {/* <Col span={24}>
                 <Card
                   bordered={false}
                   title={<h6 className="font-semibold m-0">Trip Route</h6>}
@@ -161,7 +169,7 @@ const TripDetail = () => {
                     </GoogleMap>
                   </LoadScript>
                 </Card>
-              </Col>
+              </Col> */}
             </Row>
           </TabPane>
 
@@ -174,29 +182,35 @@ const TripDetail = () => {
                   className="header-solid h-full card-profile-information"
                   bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
                 >
-                  <Descriptions style={{ marginTop: '60px' }}>
-                    <Descriptions.Item label="First Name" span={3}>
-                      {driver?.firstName}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Last Name" span={3}>
-                      {driver?.lastName}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Phone Number" span={3}>
-                      {driver?.phoneNumber}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Email" span={3}>
-                      {driver?.email}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Status" span={3}>
-                      {driver?.status}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Address" span={3}>
-                      {driver?.address}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Rating" span={3}>
-                      {driver?.rating || 'N/A'}
-                    </Descriptions.Item>
-                  </Descriptions>
+                   <Descriptions style={{ marginTop: '60px' }}>
+                      <Descriptions.Item label="First Name" span={3}>
+                        {driver && driver.firstName}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Last Name" span={3}>
+                        {driver && driver.lastName}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Phone Number" span={3}>
+                        {driver && driver.phoneNumber}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Status" span={3}>
+    {driver && (
+      <Tag color={
+        driver.status === 'Active' ? 'darkgreen' :
+        driver.status === 'Pending' ? 'darkorange' :
+        driver.status === 'Inactive' ? 'darkred' : 'gray'
+      }>
+        {driver.status.toUpperCase()}
+      </Tag>
+    )}
+  </Descriptions.Item>
+
+  <Descriptions.Item label="Rating" span={3}>
+    {driver && <Rate disabled value={driver.rating} />}
+  </Descriptions.Item>
+  
+
+  
+                    </Descriptions>
                 </Card>
               </Col>
               <Col span={24} md={12} className="mb-24">
@@ -216,7 +230,7 @@ const TripDetail = () => {
                       {renderImage(driver?.driverLicence, "Driver Licence")}
                     </TabPane>
                   </Tabs>
-                  <div className="mt-4">
+                  {/* <div className="mt-4">
                     <Upload
                       beforeUpload={beforeUpload}
                       fileList={fileList}
@@ -228,7 +242,7 @@ const TripDetail = () => {
                       </Button>
                     </Upload>
                     <Button onClick={handleUpload} hidden={!fileList.length}>Submit</Button>
-                  </div>
+                  </div> */}
                 </Card>
               </Col>
             </Row>
@@ -243,26 +257,37 @@ const TripDetail = () => {
                   className="header-solid h-full card-profile-information"
                   bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
                 >
-                  <Descriptions style={{ marginTop: '60px' }}>
-                    <Descriptions.Item label="First Name" span={3}>
-                      {passenger?.firstName}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Last Name" span={3}>
-                      {passenger?.lastName}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Phone Number" span={3}>
-                      {passenger?.phoneNumber}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Email" span={3}>
-                      {passenger?.email}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Status" span={3}>
-                      {passenger?.status}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Rating" span={3}>
-                      {passenger?.rating || 'N/A'}
-                    </Descriptions.Item>
-                  </Descriptions>
+                   <Descriptions style={{ marginTop: '60px' }}>
+                      <Descriptions.Item label="First Name" span={3}>
+                        {passenger && passenger.firstName}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Last Name" span={3}>
+                        {passenger && passenger.lastName}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Phone Number" span={3}>
+                        {passenger && passenger.phoneNumber}
+                      </Descriptions.Item>
+                      {/* <Descriptions.Item label="Email" span={3}>
+                        {passenger && passenger.email}
+                      </Descriptions.Item> */}
+                     <Descriptions.Item label="Status" span={3}>
+    {passenger && (
+      <Tag color={
+        passenger.status === 'Active' ? 'darkgreen' :
+        passenger.status === 'Pending' ? 'darkorange' :
+        passenger.status === 'Inactive' ? 'darkred' : 'gray'
+      }>
+        {passenger.status.toUpperCase()}
+      </Tag>
+    )}
+  </Descriptions.Item>
+                      {/* <Descriptions.Item label="Address" span={3}>
+                        {passenger && passenger.address}
+                      </Descriptions.Item> */}
+                        <Descriptions.Item label="Rating" span={3}>
+    {passenger && <Rate disabled value={5} />}
+  </Descriptions.Item>
+                    </Descriptions>
                 </Card>
               </Col>
               <Col span={24} md={12} className="mb-24">
@@ -275,9 +300,9 @@ const TripDetail = () => {
                     <TabPane tab="Passenger Image" key="1">
                       {renderImage(passenger?.passengerImage, "Passenger Image")}
                     </TabPane>
-                    <TabPane tab="Passenger Documents" key="2">
+                    {/* <TabPane tab="Passenger Documents" key="2">
                       {renderImage(passenger?.passengerDocuments, "Passenger Documents")}
-                    </TabPane>
+                    </TabPane> */}
                   </Tabs>
                 </Card>
               </Col>

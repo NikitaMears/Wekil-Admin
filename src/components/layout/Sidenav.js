@@ -125,14 +125,14 @@ function Sidenav({ color }) {
               <span className="label">Initial Prices</span>
             </NavLink>
           </Menu.Item>
-          {/* <Menu.Item key="searchRadiuses">
+          <Menu.Item key="searchRadiuses">
             <NavLink to="/searchRadiuses">
               <span className="icon">
                 <CheckCircleFilled style={{ color: "blue" }} />
               </span>
               <span className="label">Search Radius</span>
             </NavLink>
-          </Menu.Item> */}
+          </Menu.Item>
         </Menu.SubMenu>
 
     

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, message, Input, Tabs, Button, Table, Modal, Dropdown, Checkbox, Spin } from 'antd';
+import { Card, Row, Col, Tooltip, Tag, message, Input, Tabs, Button, Table, Modal, Dropdown, Checkbox, Spin } from 'antd';
 import { PlusOutlined, SearchOutlined, EditOutlined, InfoCircleOutlined, DownOutlined } from '@ant-design/icons';
 import SearchRadiusesForm from './searchRadiusesForm'; // Import the VehiclesForm component
 import axios from 'axios';
@@ -14,7 +14,7 @@ const SearchRadiuses = () => {
   const [formData, setFormData] = useState({});
   const [uploading, setUploading] = useState(false);
   const [selectedColumns, setSelectedColumns] = useState([]); // Add state for selected columns
-  const defaultSelectedColumns = ['name', 'amount', 'status','actions']; // Default selected columns
+  const defaultSelectedColumns = ['name', 'distance', 'status','actions']; // Default selected columns
   const [vehiclesData, setVehiclesData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -77,7 +77,23 @@ const SearchRadiuses = () => {
       setLoading(false);
     }
   };
-
+  const renderWithTooltip = (text, maxLength = 20) => {
+    const truncatedText = text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    return (
+      <Tooltip title={text}>
+        <span style={{
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          display: 'inline-block',
+          maxWidth: '100%',
+        }}>
+          {truncatedText}
+        </span>
+      </Tooltip>
+    );
+  };
+  
   const handleSearch = (value) => {
     setSearchQuery(value);
     const filteredData = vehiclesData.filter(vehicle =>
@@ -90,9 +106,34 @@ const SearchRadiuses = () => {
 
   const vehiclesColumns = [
     { title: 'Name', dataIndex: 'name', key: 'name' },
-    { title: 'amount', dataIndex: 'amount', key: 'amount' },
-    { title: 'Status', dataIndex: 'status', key: 'status' },
-
+    { title: 'distance', dataIndex: 'distance', key: 'distance' },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      width: '10%',
+      render: status => {
+        let color = '';
+        switch (status) {
+          case 'Ended':
+            color = 'darkgreen';
+            break;
+          case 'Accepted':
+            color = 'darkorange';
+            break;
+          case 'Pending':
+            color = 'darkred';
+            break;
+          default:
+            color = 'gray';
+        }
+        return (
+          <Tooltip title={status.toUpperCase()}>
+            <Tag color={color}>{renderWithTooltip(status.toUpperCase(), 10)}</Tag>
+          </Tooltip>
+        );
+      },
+    },
     {
       title: 'Actions',
       key: 'actions',
@@ -122,7 +163,7 @@ const SearchRadiuses = () => {
 
     return (
       <>
-        <Dropdown
+        {/* <Dropdown
           overlay={
             <ColumnSelector
               columns={initialColumns.map((column) => ({
@@ -138,7 +179,7 @@ const SearchRadiuses = () => {
           <Button>
             Select Columns <DownOutlined />
           </Button>
-        </Dropdown>
+        </Dropdown> */}
         <div style={{ overflowX: 'auto' }}>
           <Table
             columns={filteredColumns}
@@ -157,22 +198,7 @@ const SearchRadiuses = () => {
   return (
     <div>
       <Card>
-        <Row gutter={[24, 0]}>
-          {/* <Col span={12} style={{ textAlign: 'left' }}>
-            <Button type="primary" icon={<PlusOutlined />} onClick={handleAddVehicle}>
-              Add Vehicle Type
-            </Button>
-          </Col> */}
-          <Col span={12}>
-            <Search
-              placeholder="Search Vehicles"
-              allowClear
-              enterButton={<SearchOutlined />}
-              onSearch={handleSearch}
-              onChange={e => handleSearch(e.target.value)}
-            />
-          </Col>
-        </Row>
+ 
         <Row gutter={[16, 16]}>
           <Col xs={24} xl={selectedRow ? 12 : 24}>
             {loading ? (
@@ -190,7 +216,7 @@ const SearchRadiuses = () => {
       </Card>
 
       <Modal
-        title={formData.id ? 'Edit Vehicle' : 'Add Vehicle'}
+        title={formData.id ? 'Edit Search Radius' : 'Edit Search Radius'}
         visible={irModalVisible}
         onCancel={() => setProjectModalVisible(false)}
         footer={null}

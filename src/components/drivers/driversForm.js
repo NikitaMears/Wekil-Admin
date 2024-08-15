@@ -54,10 +54,10 @@ const DriversForm = ({ formData, setFormData, closeModal, refetchData }) => {
       }
 
       if (response?.driver?.id) {
-        await uploadFiles(`http://194.164.72.21:5001/drivers/updateDocuments/${response.driver.id}`, response.driver.id);
+      //  await uploadFiles(`http://194.164.72.21:5001/drivers/updateDocuments/${response.driver.id}`, response.driver.id);
 
-        message.success('Driver and documents uploaded successfully');
-      } else {
+      message.success('Driver saved successfully');
+    } else {
         message.success('Driver saved successfully');
       }
 
@@ -66,7 +66,7 @@ const DriversForm = ({ formData, setFormData, closeModal, refetchData }) => {
       refetchData(); // Trigger refetch after successful form submission
     } catch (error) {
       console.error('Error:', error);
-      message.error('Failed to save driver');
+      // message.error('Failed to save driver');
     }
   };
 
@@ -91,30 +91,6 @@ const DriversForm = ({ formData, setFormData, closeModal, refetchData }) => {
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Please enter an email' }]}>
-            <Input />
-          </Form.Item>
-        </Col>
-      </Row>
-      <Row gutter={16}>
-        <Col span={12}>
-          <Form.Item label="Password" name="password" rules={[{ required: true, message: 'Please enter a password' }]}>
-            <Input />
-          </Form.Item>
-        </Col>
-        <Col span={12}>
-          <Form.Item label="Confirm Password" name="confPassword" rules={[{ required: true, message: 'Please confirm your password' }]}>
-            <Input />
-          </Form.Item>
-        </Col>
-      </Row>
-      <Row gutter={16}>
-        <Col span={12}>
-          <Form.Item label="Address" name="address">
-            <Input />
-          </Form.Item>
-        </Col>
-        <Col span={12}>
           <Form.Item label="Status" name="status">
             <Select>
               <Option value="Pending">Pending</Option>
@@ -124,16 +100,12 @@ const DriversForm = ({ formData, setFormData, closeModal, refetchData }) => {
           </Form.Item>
         </Col>
       </Row>
-      <Row gutter={16}>
-        <Col span={12}>
-          <Form.Item label="Rating" name="rating">
-            <Input />
-          </Form.Item>
-        </Col>
-      </Row>
-      <Row gutter={16}>
+     
+   
+    
+      {/* <Row gutter={16}>
         <Col span={8}>
-          <Form.Item label="Documents" name="documents">
+          <Form.Item label="Documents" rules={[{ required: false, message: 'Please enter a first name' }]} name="documents">
             <Upload
               beforeUpload={() => false}
               fileList={fileList}
@@ -145,7 +117,7 @@ const DriversForm = ({ formData, setFormData, closeModal, refetchData }) => {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="Driver Image" name="driverImage">
+          <Form.Item label="Driver Image" rules={[{ required: false, message: 'Please enter a first name' }]} name="driverImage">
             <Upload
               beforeUpload={() => false}
               fileList={imageFileList}
@@ -157,7 +129,7 @@ const DriversForm = ({ formData, setFormData, closeModal, refetchData }) => {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="Driver Licence" name="driverLicence">
+          <Form.Item label="Driver Licence" rules={[{ required: false, message: 'Please enter a first name' }]} name="driverLicence">
             <Upload
               beforeUpload={() => false}
               fileList={licenceFileList}
@@ -168,7 +140,7 @@ const DriversForm = ({ formData, setFormData, closeModal, refetchData }) => {
             </Upload>
           </Form.Item>
         </Col>
-      </Row>
+      </Row> */}
       <Form.Item>
         <Button type="primary" htmlType="submit">
           Save

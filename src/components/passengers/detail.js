@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Card, Upload, message, Descriptions, Button, Collapse, Spin, Table, Tabs, Avatar, Modal, Input } from "antd";
+import { Row, Col,Tag,Tooltip, Card, Upload, message, Rate,Descriptions, Button, Collapse, Spin, Table, Tabs, Avatar, Modal, Input } from "antd";
 import { useParams } from "react-router-dom";
-import { ToTopOutlined, UserOutlined, SearchOutlined } from '@ant-design/icons';
+import { ToTopOutlined,InfoCircleOutlined, UserOutlined, SearchOutlined } from '@ant-design/icons';
 import useFetchWithToken from '../../services/api'; // Import the useFetchWithToken hook
+import { NavLink } from "react-router-dom";
 
 const { Panel } = Collapse;
 const { TabPane } = Tabs;
@@ -29,7 +30,22 @@ function PassengersDetail() {
     setFileList([file]);
     return false; // Returning false prevents default upload behavior
   };
-
+  const renderWithTooltip = (text, maxLength = 20) => {
+    const truncatedText = text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    return (
+      <Tooltip title={text}>
+        <span style={{
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          display: 'inline-block',
+          maxWidth: '100%',
+        }}>
+          {truncatedText}
+        </span>
+      </Tooltip>
+    );
+  };
   const handleUpload = async () => {
     const formData = new FormData();
     formData.append("file", fileList[0]);
@@ -60,55 +76,92 @@ function PassengersDetail() {
     );
   });
 
-  const tripColumns = [
+  const tripsColumns = [
     {
       title: 'Trip ID',
       dataIndex: 'id',
       key: 'id',
+      width: '5%',
+      render: text => renderWithTooltip(text, 10), // Limit to 10 characters
+    },
+  
+    {
+      title: 'Passenger Name',
+      dataIndex: 'passengerId',
+      key: 'passengerId',
+      width: '10%',
+      render: (text, record) => renderWithTooltip(record.passenger ? `${record.passenger.firstName} ${record.passenger.lastName}` : 'N/A', 15), // Limit to 15 characters
     },
     {
       title: 'Start Location',
       dataIndex: 'from',
       key: 'from',
+      width: '10%',
+      render: text => renderWithTooltip(text, 15), // Limit to 20 characters
     },
     {
       title: 'End Location',
       dataIndex: 'to',
       key: 'to',
+      width: '10%',
+      render: text => renderWithTooltip(text, 15), // Limit to 20 characters
     },
     {
       title: 'Date',
       dataIndex: 'pickUpTime',
       key: 'pickUpTime',
-      render: (text) => new Date(text).toLocaleString(),
+      width: '10%',
+      render: text => renderWithTooltip(text ? text : 'N/A', 10), // Limit to 19 characters
     },
     {
       title: 'Distance',
       dataIndex: 'distance',
       key: 'distance',
+      width: '10%',
+      render: text => renderWithTooltip(text, 10), // Limit to 10 characters
     },
     {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
+      width: '10%',
+      render: text => renderWithTooltip(text, 10), // Limit to 10 characters
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      width: '20%',
+      render: (status) => {
+        let color = '';
+        switch (status) {
+          case 'Completed':
+            color = 'darkgreen';
+            break;
+          case 'Active':
+            color = 'darkorange';
+            break;
+          case 'Inactive':
+            color = 'darkred';
+            break;
+          default:
+            color = 'gray'; // Fallback color if status doesn't match any case
+        }
+        return <Tag color={color}>{status.toUpperCase()}</Tag>;
+      },
     },
     {
-      title: 'Driver Name',
-      dataIndex: ['driver', 'firstName'],
-      key: 'driverName',
-      render: (text, record) => `${record.driver.firstName} ${record.driver.lastName}`,
+      title: 'Actions',
+      key: 'actions',
+      width: '10%',
+      render: (_, record) => (
+        <Button type="link">
+          <NavLink to={`/tripDetails/${record.id}`} style={{ color: 'green' }}>
+            <InfoCircleOutlined /> &nbsp;Details
+          </NavLink>
+        </Button>
+      ),
     },
-    {
-      title: 'Driver Phone',
-      dataIndex: ['driver', 'phoneNumber'],
-      key: 'driverPhone',
-    },
-    // Add other trip details as needed
   ];
 
   const renderImage = (src, alt) => (
@@ -147,15 +200,23 @@ function PassengersDetail() {
                       {/* <Descriptions.Item label="Email" span={3}>
                         {passenger && passenger.email}
                       </Descriptions.Item> */}
-                      <Descriptions.Item label="Status" span={3}>
-                        {passenger && passenger.status}
-                      </Descriptions.Item>
+                     <Descriptions.Item label="Status" span={3}>
+    {passenger && (
+      <Tag color={
+        passenger.status === 'Active' ? 'darkgreen' :
+        passenger.status === 'Pending' ? 'darkorange' :
+        passenger.status === 'Inactive' ? 'darkred' : 'gray'
+      }>
+        {passenger.status.toUpperCase()}
+      </Tag>
+    )}
+  </Descriptions.Item>
                       {/* <Descriptions.Item label="Address" span={3}>
                         {passenger && passenger.address}
                       </Descriptions.Item> */}
-                      <Descriptions.Item label="Rating" span={3}>
-                        {passenger && passenger.rating}
-                      </Descriptions.Item>
+                     <Descriptions.Item label="Rating" span={3}>
+    {passenger && <Rate disabled value={5} />}
+  </Descriptions.Item>
                     </Descriptions>
                   </Card>
                 </div>
@@ -206,7 +267,7 @@ function PassengersDetail() {
                     onChange={e => setSearchQuery(e.target.value)}
                     style={{ marginBottom: 16 }}
                   />
-                  <Table columns={tripColumns} dataSource={filteredTrips} rowKey="id" />
+                  <Table columns={tripsColumns} dataSource={filteredTrips} rowKey="id" />
                 </Card>
               </Col>
             </Row>

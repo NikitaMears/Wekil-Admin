@@ -1,74 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Upload, Select, Row, Col, message } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { Form, Input, Button,Select, Row, Col, message } from 'antd';
 import axios from 'axios';
 
 const { Option } = Select;
 
 const SearchRadiusesForm = ({ formData, setFormData, closeModal, setSubmitted }) => {
   const [form] = Form.useForm();
-  const [initialPrices, setVehicleTypes] = useState([]);
 
   useEffect(() => {
     form.setFieldsValue(formData);
   }, [formData, form]);
 
-  useEffect(() => {
-    fetchVehicleTypes();
-  }, []);
-
-  const fetchVehicleTypes = async () => {
-    try {
-      const response = await axios.get("http://194.164.72.21:5001/initialPrices");
-      setVehicleTypes(response.data);
-    } catch (error) {
-      message.error("Unable to load vehicle types");
-    }
-  };
-
-
-
   const onFinish = async (values) => {
-    const formData = new FormData();
-
-    Object.keys(values).forEach(key => {
-      formData.append(key, values[key]);
-    });
-
- 
-
-  
-
     try {
-      let response;
-      if (formData.id) {
-        // Update vehicle
-        response = await axios.put(`http://194.164.72.21:5001/initialPrices/${formData.id}`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-      } else {
-        // Add new vehicle
-        response = await axios.post('http://194.164.72.21:5001/initialPrices', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-      }
+      // Prepare form data, including the existing ID for update
+      const updatedData = { ...formData, ...values };
 
-      if (response.data.id) {
-        message.success('Vehicle and documents uploaded successfully');
-      } else {
-        message.success('Vehicle saved successfully');
-      }
+      // Use axios to make the PUT request with the existing ID
+      const response = await axios.put(`http://194.164.72.21:5001/searchRadius/${formData.id}`, updatedData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
       setFormData({});
       closeModal();
       setSubmitted(true); // Trigger refetch after successful form submission
+      message.success('Search Radius updated successfully');
     } catch (error) {
       console.error('Error:', error);
-      message.error('Failed to save initialPrices');
+      message.error('Failed to save search radius');
     }
   };
 
@@ -81,7 +42,7 @@ const SearchRadiusesForm = ({ formData, setFormData, closeModal, setSubmitted })
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item label="Amount" name="amount" rules={[{ required: true, message: 'Please enter amount' }]}>
+          <Form.Item label="Distance" name="distance" rules={[{ required: true, message: 'Please enter distance' }]}>
             <Input />
           </Form.Item>
         </Col>
@@ -93,12 +54,8 @@ const SearchRadiusesForm = ({ formData, setFormData, closeModal, setSubmitted })
             <Input />
           </Form.Item>
         </Col>
-        
       </Row>
- 
-   
- 
- 
+
       <Form.Item>
         <Button type="primary" htmlType="submit">
           Save
