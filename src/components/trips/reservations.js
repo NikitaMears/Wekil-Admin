@@ -161,7 +161,7 @@ const Reservations = () => {
       render: status => {
         let color = '';
         switch (status) {
-          case 'Ended':
+          case 'Started':
             color = 'darkgreen';
             break;
           case 'Accepted':

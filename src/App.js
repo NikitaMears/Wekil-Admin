@@ -57,6 +57,8 @@ import UpdateProfile from "./components/userManagement/updateProfile";
 import TripDetail from "./components/trips/detail";
 import ReservationDetail from "./components/trips/reservationDetail";
 import Dispatch from "./components/dispatch/dispatch";
+import TripRequests from "./components/trips/tripRequests";
+import TripRequestDetail from "./components/trips/tripRequestDetail";
 
 
 
@@ -79,6 +81,8 @@ function App() {
           <Route exact path="/driverDetails/:id" component={DriversDetail} />
           <Route exact path="/passengers" component={Passengers} />
           <Route exact path="/trips" component={Trips} />
+          <Route exact path="/tripRequests" component={TripRequests} />
+
 
           <Route exact path="/companies" component={Companies} />
 
@@ -96,6 +100,8 @@ function App() {
 
           <Route exact path="/passengerDetails/:id" component={PassengersDetail} />
           <Route exact path="/tripDetails/:id" component={TripDetail} />
+          <Route exact path="/tripRequestDetails/:id" component={TripRequestDetail} />
+
           <Route exact path="/reservationDetails/:id" component={ReservationDetail} />
 
 

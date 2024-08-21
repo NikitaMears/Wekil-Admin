@@ -1,30 +1,57 @@
-import React, { useState, useEffect } from "react";
-import { Row, Col, Rate, Tag, Card, Upload, message, Descriptions, Button, Tabs, Avatar, Modal, Spin } from "antd";
+import React, { useState } from "react";
+import { Row, Col, Rate, Tag, Card, Upload, message, Descriptions, Button, Tabs, Avatar, Modal, Spin, Select } from "antd";
 import { useParams } from "react-router-dom";
 import { ToTopOutlined, UserOutlined } from '@ant-design/icons';
 import useFetchWithToken from '../../services/api';
+import axios from "axios";
 
 const { TabPane } = Tabs;
+const { Option } = Select;
 
 const ReservationDetail = () => {
   const [fileList, setFileList] = useState([]);
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
-  const [isLoading, setIsLoading] = useState(true);  // Loading state
+  const [selectedDriver, setSelectedDriver] = useState(null); // State to hold selected driver
   const { id } = useParams();
 
-  // Adjusted to properly extract the reservation data
+  // Fetch reservation data
   const { data, loading: reservationLoading } = useFetchWithToken(`reservations/${id}`);
+  const { data: driversData, loading: driversLoading, postFormData } = useFetchWithToken(`drivers`);
+
+  // Combine the loading states
+  const isLoading = reservationLoading || driversLoading;
+
   const tripData = data?.reservation; // Extracting the reservation data
+  const drivers = driversData || []; // Ensure drivers data is properly handled
 
   const driver = tripData?.driver;
   const passenger = tripData?.passenger;
 
-  useEffect(() => {
-    if (!reservationLoading) {
-      setIsLoading(false); // Data has been fetched, stop loading
+  const handleDriverSelect = (value) => {
+    setSelectedDriver(value);
+  };
+  const forwardToDriver = async () => {
+    if (!selectedDriver) {
+      message.warning("Please select a driver to forward the reservation.");
+      return;
     }
-  }, [reservationLoading]);
+
+    try {
+      const response = await axios.post(`http://194.164.72.21:5001/reservations/forward/${id}`, { driverId: selectedDriver }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      window.location.reload();
+
+      message.success("Reservation successfully forwarded to the selected driver.");
+    } catch (error) {
+      message.error("Failed to forward reservation.");
+      console.error('Error forwarding reservation:', error);
+    }
+  };
+  
 
   const beforeUpload = (file) => {
     setFileList([file]);
@@ -88,8 +115,9 @@ const ReservationDetail = () => {
                       {tripData && (
                         <Tag color={
                           tripData.status === 'Started' ? 'darkorange' :
-                          tripData.status === 'Completed' ? 'darkgreen' :
-                          tripData.status === 'Cancelled' ? 'darkred' : 'gray'
+                          tripData.status === 'Accepted' ? 'darkorange' :
+                          // tripData.status === 'Pending' ? 'darkred' :
+                          tripData.status === 'Pending' ? 'darkred' : 'gray'
                         }>
                           {tripData.status.toUpperCase()}
                         </Tag>
@@ -113,7 +141,29 @@ const ReservationDetail = () => {
                     <Descriptions.Item label="Passenger Feedback" span={1}>
                       {tripData?.passengerFeedback || 'N/A'}
                     </Descriptions.Item>
+                    {tripData?.status !== "Started" && drivers && (
+  <Descriptions.Item label="Assign or change Driver" span={1}>
+    <Select
+      style={{ width: '50%', marginBottom: '10px' }}
+      placeholder="Select Driver"
+      onChange={handleDriverSelect}
+    >
+      {drivers.map(driver => (
+        <Option key={driver.id} value={driver.id}>
+          {driver.firstName} {driver.lastName} - {driver.phoneNumber}
+        </Option>
+      ))}
+    </Select>
+    <Button type="primary" onClick={forwardToDriver}>
+      Forward to Driver
+    </Button>
+  </Descriptions.Item>
+)}
+
+
                   </Descriptions>
+
+              
                 </Card>
               </Col>
             </Row>

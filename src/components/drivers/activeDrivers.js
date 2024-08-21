@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, message, Input, Tabs, Button, Table, Modal, Upload, Checkbox, Dropdown, Tooltip, Spin } from 'antd';
+import { Card, Row, Col, message, Tag,Input, Tabs, Button, Table, Modal, Upload, Checkbox, Dropdown, Tooltip, Spin } from 'antd';
 import { PlusOutlined, SearchOutlined, EditOutlined, DeleteOutlined, InfoCircleOutlined, ToTopOutlined, DownOutlined } from '@ant-design/icons';
 import DriversForm from './driversForm'; // Import the DriversForm component
 import useFetchWithToken from '../../services/api';
@@ -37,34 +37,36 @@ const ActiveDrivers = () => {
 
   const fetchDriverDetails = async (driverId) => {
     try {
-      const response = await axios.get(`http://194.164.72.21:5001/drivers/${driverId}`, {
-        headers: { 'tennant': 'web' }
-      });
-      return response.data.driver;
+        const response = await axios.get(`http://194.164.72.21:5001/drivers/${driverId}`, {
+            headers: { 'tennant': 'web' }
+        });
+        const { status, ...driverDetails } = response.data.driver;  // Exclude status
+        return driverDetails;  // Return details without status
     } catch (error) {
-      console.error(`Unable to fetch driver details for driverId ${driverId}`, error);
-      return null;
+        console.error(`Unable to fetch driver details for driverId ${driverId}`, error);
+        return null;
     }
-  };
+};
 
-  const fetchData = async () => {
-    try {
+const fetchData = async () => {
+  try {
       setLoading(true);
       const response = await axios.get("http://194.164.72.21:5001/drivers/active");
 
       const driversWithDetails = await Promise.all(response.data.activeDrivers.map(async driver => {
-        const driverDetails = await fetchDriverDetails(driver.driverId);
-        return { ...driver, ...driverDetails, key: driver.id }; // 'key' is necessary for table rows
+          const driverDetails = await fetchDriverDetails(driver.driverId);
+          return { ...driver, ...driverDetails, key: driver.id }; // Do not override status
       }));
 
       setDriversData(driversWithDetails);
       setFilteredData(driversWithDetails);
       setLoading(false);
-    } catch (error) {
+  } catch (error) {
       message.error("Unable to load data!");
       setLoading(false);
-    }
-  };
+  }
+};
+
 
   const handleAddDriver = () => {
     setFormData({});
@@ -107,29 +109,57 @@ const ActiveDrivers = () => {
     setFilteredData(filteredData);
   };
 
+  // const driversColumns = [
+  //   { title: 'Driver ID', dataIndex: 'driverId', key: 'driverId' },
+  //   { title: 'First Name', dataIndex: 'firstName', key: 'firstName' },
+  //   { title: 'Last Name', dataIndex: 'lastName', key: 'lastName' },
+
+
+  //   // { title: 'Vehicle Type ID', dataIndex: 'vehicleTypeId', key: 'vehicleTypeId' },
+  //   // { title: 'Socket ID', dataIndex: 'socketId', key: 'socketId' },
+  //   { title: 'Lattitude', dataIndex: 'currentLat', key: 'currentLat' },
+  //   { title: 'Longitude', dataIndex: 'currentLon', key: 'currentLon' },
+  //   { title: 'Queue Number', dataIndex: 'queueNumber', key: 'queueNumber' },
+  //   { title: 'Status', dataIndex: 'status', key: 'status' },
+  //   {
+  //     title: 'Actions',
+  //     key: 'actions',
+  //     render: (_, record) => (
+  //       <>
+  //         <Button type="link" icon={<EditOutlined />} onClick={() => handleEditDriver(record)} style={{ marginRight: 8 }}>Edit</Button>
+  //         <Button type="link"><NavLink to={`/driverDetails/${record.driverId}`} style={{ color: 'green' }}><InfoCircleOutlined /> &nbsp;Details</NavLink></Button>
+  //       </>
+  //     ),
+  //   },
+  // ];
+
   const driversColumns = [
     { title: 'Driver ID', dataIndex: 'driverId', key: 'driverId' },
     { title: 'First Name', dataIndex: 'firstName', key: 'firstName' },
     { title: 'Last Name', dataIndex: 'lastName', key: 'lastName' },
-
-
-    // { title: 'Vehicle Type ID', dataIndex: 'vehicleTypeId', key: 'vehicleTypeId' },
-    // { title: 'Socket ID', dataIndex: 'socketId', key: 'socketId' },
     { title: 'Lattitude', dataIndex: 'currentLat', key: 'currentLat' },
     { title: 'Longitude', dataIndex: 'currentLon', key: 'currentLon' },
     { title: 'Queue Number', dataIndex: 'queueNumber', key: 'queueNumber' },
-    { title: 'Status', dataIndex: 'status', key: 'status' },
     {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, record) => (
-        <>
-          <Button type="link" icon={<EditOutlined />} onClick={() => handleEditDriver(record)} style={{ marginRight: 8 }}>Edit</Button>
-          <Button type="link"><NavLink to={`/driverDetails/${record.driverId}`} style={{ color: 'green' }}><InfoCircleOutlined /> &nbsp;Details</NavLink></Button>
-        </>
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status) => (
+          <Tag color={status === 'Ready' ? 'green' : status === 'Busy' ? 'red' : 'gray'}>
+              {status}
+          </Tag>
       ),
+  },    {
+        title: 'Actions',
+        key: 'actions',
+        render: (_, record) => (
+            <>
+                <Button type="link" icon={<EditOutlined />} onClick={() => handleEditDriver(record)} style={{ marginRight: 8 }}>Edit</Button>
+                <Button type="link"><NavLink to={`/driverDetails/${record.driverId}`} style={{ color: 'green' }}><InfoCircleOutlined /> &nbsp;Details</NavLink></Button>
+            </>
+        ),
     },
-  ];
+];
 
   const handleEditDriver = (record) => {
     setFormData(record);

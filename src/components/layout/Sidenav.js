@@ -63,6 +63,14 @@ function Sidenav({ color }) {
               <span className="label">Vehicles</span>
             </NavLink>
           </Menu.Item>
+          <Menu.Item key="tripRequests">
+            <NavLink to="/tripRequests">
+              <span className="icon">
+                <CheckCircleFilled style={{ color: "blue" }} />
+              </span>
+              <span className="label">Trip Requests</span>
+            </NavLink>
+          </Menu.Item>
           <Menu.Item key="trips">
             <NavLink to="/trips">
               <span className="icon">
