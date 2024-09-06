@@ -145,7 +145,7 @@ const fetchData = async () => {
       dataIndex: 'status',
       key: 'status',
       render: (status) => (
-          <Tag color={status === 'Ready' ? 'green' : status === 'Busy' ? 'red' : 'gray'}>
+          <Tag color={status === 'Ready' ? 'darkgreen' : status === 'Busy' ? 'darkred' : 'gray'}>
               {status}
           </Tag>
       ),
